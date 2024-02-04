@@ -8,19 +8,18 @@ import com.app.userservice.dto.LoginUserRequestDTO;
 import com.app.userservice.dto.LoginUserResponseDTO;
 import com.app.userservice.dto.NewUserRequestDTO;
 import com.app.userservice.dto.UserDTO;
+import com.app.userservice.entity.Users;
 import com.app.userservice.exception.UserAlreadyExistsException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.UserService;
 import jakarta.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,5 +80,10 @@ public class AuthenticationController {
         } catch (Exception ex) {
             return httpErrorResponseHandler.handleBadRequest(ex.getMessage());
         }
+    }
+    
+    @GetMapping("/me")
+    public Users getLoggedInUserProfile(@AuthenticationPrincipal Users user) {
+        return user;
     }
 }

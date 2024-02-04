@@ -4,6 +4,7 @@
  */
 package com.app.userservice.service;
 
+import com.app.userservice.entity.Roles;
 import com.app.userservice.entity.Users;
 
 /**
@@ -11,6 +12,7 @@ import com.app.userservice.entity.Users;
  * @author user
  */
 public interface JWTService {
-    public String generateJWT(Users user);
+    public String generateJWT(Users user, Roles role);
     public String getUsername(String token);
+    public String getRoleName(String token);
 }

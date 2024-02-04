@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.app.userservice.converter;
+package com.app.userservice.component;
 
 import com.app.userservice.dto.UserDTO;
 import com.app.userservice.entity.Users;

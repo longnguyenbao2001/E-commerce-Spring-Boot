@@ -4,13 +4,17 @@
  */
 package com.app.userservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
@@ -22,13 +26,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
-    @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id"),
-    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
-    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
-    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
-    @NamedQuery(name = "Users.findByFirstName", query = "SELECT u FROM Users u WHERE u.firstName = :firstName"),
-    @NamedQuery(name = "Users.findByLastName", query = "SELECT u FROM Users u WHERE u.lastName = :lastName")})
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,6 +50,10 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
+    @JsonIgnore
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Roles roles;
 
     public Users() {
     }
@@ -117,6 +119,14 @@ public class Users implements Serializable {
         this.lastName = lastName;
     }
 
+    public Roles getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Roles roles) {
+        this.roles = roles;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -139,7 +149,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.userservice.model.Users[ id=" + id + " ]";
+        return "com.app.userservice.entity.Users[ id=" + id + " ]";
     }
     
 }

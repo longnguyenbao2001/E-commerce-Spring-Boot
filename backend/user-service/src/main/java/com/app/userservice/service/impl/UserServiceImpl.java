@@ -4,18 +4,20 @@
  */
 package com.app.userservice.service.impl;
 
-import com.app.userservice.converter.UserConverter;
+import com.app.userservice.component.UserConverter;
 import com.app.userservice.service.EncryptionService;
 import com.app.userservice.service.JWTService;
 import com.app.userservice.dao.UserRepository;
 import com.app.userservice.dto.LoginUserRequestDTO;
 import com.app.userservice.dto.NewUserRequestDTO;
 import com.app.userservice.dto.UserDTO;
+import com.app.userservice.entity.Roles;
 import com.app.userservice.entity.Users;
 import com.app.userservice.service.UserService;
 import com.app.userservice.exception.UserAlreadyExistsException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,7 +38,11 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private JWTService jWTService;
+    
+    @Autowired
+    private Environment env;
 
+    @Override
     public Optional<Users> findByUsername(String username) {
         Optional<Users> result = userRepository.findByUsername(username);
 
@@ -68,7 +74,13 @@ public class UserServiceImpl implements UserService {
         if (existingUser.isPresent()) {
             Users user = existingUser.get();
             if(encryptionService.verifyPassword(loginUserRequestDTO.getPassword(), user.getPassword())) {
-                return jWTService.generateJWT(user);
+                Roles role = user.getRoles();
+                if (role == null) {
+                    role = new Roles();
+                    role.setName(env.getProperty("role.user"));
+                }
+                
+                return jWTService.generateJWT(user, role);
             }
         }
         return null;

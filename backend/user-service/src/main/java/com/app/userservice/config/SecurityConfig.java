@@ -4,22 +4,36 @@
  */
 package com.app.userservice.config;
 
+import com.app.userservice.component.JWTRequestFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  *
  * @author user
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+    
+    @Autowired
+    private JWTRequestFilter jwtRequestFilter;
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable().cors().disable();
-        httpSecurity.authorizeHttpRequests().anyRequest().permitAll();
+        httpSecurity
+                .csrf().disable()
+                .cors().disable()
+                .authorizeRequests()
+                    .requestMatchers("/auth/me").hasAuthority("ADMIN")
+                    .anyRequest().permitAll()
+                .and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         
         return httpSecurity.build();
     }

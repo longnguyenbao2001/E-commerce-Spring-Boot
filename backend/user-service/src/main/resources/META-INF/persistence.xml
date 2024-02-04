@@ -3,6 +3,7 @@
   <persistence-unit name="com.app_user-service_jar_0.0.1-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.app.userservice.entity.Users</class>
+    <class>com.app.userservice.entity.Roles</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ecommerce"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
