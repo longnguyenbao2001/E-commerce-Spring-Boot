@@ -29,9 +29,11 @@ public class SecurityConfig {
         httpSecurity
                 .csrf().disable()
                 .cors().disable()
-                .authorizeRequests()
-                .anyRequest().permitAll()
-                .and()
+                .authorizeRequests(authorizeRequests
+                        -> authorizeRequests
+                        .requestMatchers("/products").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

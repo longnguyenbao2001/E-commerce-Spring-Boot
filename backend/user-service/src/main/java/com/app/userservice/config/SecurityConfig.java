@@ -20,21 +20,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Autowired
     private JWTRequestFilter jwtRequestFilter;
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 .cors().disable()
-                .authorizeRequests()
-                    .requestMatchers("/auth/me").hasAuthority("ADMIN")
-                    .anyRequest().permitAll()
-                .and()
+                .authorizeRequests(authorizeRequests
+                        -> authorizeRequests
+                        .requestMatchers("/auth/signup", "/auth/signin", "/auth/verify").permitAll()
+                        .requestMatchers("/auth/me").hasAuthority("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return httpSecurity.build();
     }
 }

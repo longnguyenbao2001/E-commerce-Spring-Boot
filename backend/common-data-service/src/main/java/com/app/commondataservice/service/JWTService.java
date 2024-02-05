@@ -13,8 +13,6 @@ import com.app.commondataservice.entity.Users;
  */
 public interface JWTService {
 
-    public String generateJWT(Users user, Roles role);
-
     public String getUsername(String token);
 
     public String getRoleName(String token);

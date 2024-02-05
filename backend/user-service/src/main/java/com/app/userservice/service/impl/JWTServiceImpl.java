@@ -22,10 +22,10 @@ import org.springframework.core.env.Environment;
  */
 @Service
 public class JWTServiceImpl implements JWTService {
-   
+
     @Autowired
     private Environment env;
-    
+
     @Value("${jwt.algorithm.key}")
     private String algorithmKey;
     @Value("${jwt.issuer}")
@@ -35,8 +35,9 @@ public class JWTServiceImpl implements JWTService {
     private Algorithm algorithm;
 //    private String USERNAME_KEY = env.getProperty("jwt.USERNAME_KEY");
 //    private String ROLE_KEY = env.getProperty("jwt.ROLE_KEY");
-    private static final String USERNAME_KEY ="USERNAME";
+    private static final String USERNAME_KEY = "USERNAME";
     private static final String ROLE_KEY = "ROLE";
+    private static final String EMAIL_KEY = "EMAIL";
 
     @PostConstruct
     public void postConstruct() {
@@ -62,6 +63,14 @@ public class JWTServiceImpl implements JWTService {
     public String getRoleName(String token) {
         return JWT.decode(token).getClaim(ROLE_KEY).asString();
     }
-    
-    
+
+    @Override
+    public String generateVerificationJWT(Users user) {
+        return JWT.create()
+                .withClaim(EMAIL_KEY, user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
+                .withIssuer(issuer)
+                .sign(algorithm);
+    }
+
 }

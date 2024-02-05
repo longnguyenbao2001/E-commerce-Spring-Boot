@@ -4,9 +4,10 @@
  */
 package com.app.userservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.List;
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +18,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 
 /**
  *
@@ -50,12 +54,17 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
-    @JsonIgnore
+    @Column(name = "email_verified")
+    private Boolean emailVerified;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch = FetchType.LAZY)
+    @OrderBy("id desc")
+    private List<VerificationTokens> verificationTokensList;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Roles roles;
 
     public Users() {
+        this.verificationTokensList = new ArrayList<>();
     }
 
     public Users(Long id) {
@@ -119,6 +128,22 @@ public class Users implements Serializable {
         this.lastName = lastName;
     }
 
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public List<VerificationTokens> getVerificationTokensList() {
+        return verificationTokensList;
+    }
+
+    public void setVerificationTokensList(List<VerificationTokens> verificationTokensList) {
+        this.verificationTokensList = verificationTokensList;
+    }
+
     public Roles getRoles() {
         return roles;
     }
@@ -151,5 +176,5 @@ public class Users implements Serializable {
     public String toString() {
         return "com.app.userservice.entity.Users[ id=" + id + " ]";
     }
-    
+
 }

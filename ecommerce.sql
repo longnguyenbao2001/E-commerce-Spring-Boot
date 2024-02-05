@@ -12,8 +12,17 @@ CREATE TABLE users (
 	email VARCHAR(255) NOT NULL,
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(255) NOT null,
+	email_verified BOOLEAN DEFAULT false,
 	role_id BIGINT,
 	foreign key(role_id) references roles(id) on delete set null
+);
+
+CREATE TABLE verification_tokens (
+    id BIGSERIAL PRIMARY KEY,
+    token TEXT NOT NULL UNIQUE,
+    created_timestamp TIMESTAMP NOT NULL,
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
 
 CREATE TABLE categories (

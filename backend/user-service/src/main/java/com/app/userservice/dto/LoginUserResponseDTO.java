@@ -9,7 +9,12 @@ package com.app.userservice.dto;
  * @author user
  */
 public class LoginUserResponseDTO {
+
     private String jwt;
+
+    private boolean success;
+
+    private String message;
 
     public String getJwt() {
         return jwt;
@@ -18,6 +23,21 @@ public class LoginUserResponseDTO {
     public void setJwt(String jwt) {
         this.jwt = jwt;
     }
-    
-    
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

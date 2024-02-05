@@ -4,6 +4,9 @@ FROM public.roles;
 SELECT id, username, "password", email, first_name, last_name, role_id
 FROM public.users;
 
+SELECT id, "token", created_timestamp, user_id
+FROM public.verification_tokens;
+
 SELECT id, "name", description
 FROM public.categories;
 

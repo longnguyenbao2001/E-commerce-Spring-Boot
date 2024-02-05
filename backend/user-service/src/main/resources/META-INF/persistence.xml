@@ -4,6 +4,9 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.app.userservice.entity.Users</class>
     <class>com.app.userservice.entity.Roles</class>
+    <class>com.app.userservice.entity.Users_1</class>
+    <class>com.app.userservice.entity.Roles_1</class>
+    <class>com.app.userservice.entity.VerificationTokens</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ecommerce"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>

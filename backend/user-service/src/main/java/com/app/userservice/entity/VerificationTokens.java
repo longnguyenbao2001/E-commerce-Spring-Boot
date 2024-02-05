@@ -5,7 +5,7 @@
 package com.app.userservice.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,20 +13,23 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  *
  * @author user
  */
 @Entity
-@Table(name = "roles")
+@Table(name = "verification_tokens")
 @NamedQueries({
-    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")})
-public class Roles implements Serializable {
+    @NamedQuery(name = "VerificationTokens.findAll", query = "SELECT v FROM VerificationTokens v")})
+public class VerificationTokens implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,21 +38,27 @@ public class Roles implements Serializable {
     @Column(name = "id")
     private Long id;
     @Basic(optional = false)
-    @Column(name = "name")
-    private String name;
-    @OneToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private List<Users> usersList;
+    @Column(name = "token")
+    private String token;
+    @Basic(optional = false)
+    @Column(name = "created_timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdTimestamp;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Users users;
 
-    public Roles() {
+    public VerificationTokens() {
     }
 
-    public Roles(Long id) {
+    public VerificationTokens(Long id) {
         this.id = id;
     }
 
-    public Roles(Long id, String name) {
+    public VerificationTokens(Long id, String token, Date createdTimestamp) {
         this.id = id;
-        this.name = name;
+        this.token = token;
+        this.createdTimestamp = createdTimestamp;
     }
 
     public Long getId() {
@@ -60,20 +69,28 @@ public class Roles implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getToken() {
+        return token;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public List<Users> getUsersList() {
-        return usersList;
+    public Date getCreatedTimestamp() {
+        return createdTimestamp;
     }
 
-    public void setUsersList(List<Users> usersList) {
-        this.usersList = usersList;
+    public void setCreatedTimestamp(Date createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     @Override
@@ -86,10 +103,10 @@ public class Roles implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Roles)) {
+        if (!(object instanceof VerificationTokens)) {
             return false;
         }
-        Roles other = (Roles) object;
+        VerificationTokens other = (VerificationTokens) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -98,7 +115,7 @@ public class Roles implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.userservice.entity.Roles[ id=" + id + " ]";
+        return "com.app.userservice.entity.VerificationTokens[ id=" + id + " ]";
     }
 
 }

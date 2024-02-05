@@ -31,27 +31,10 @@ public class JWTServiceImpl implements JWTService {
     @Value("${jwt.issuer}")
     private String issuer;
     @Value("${jwt.expiryInSeconds}")
-    private int expiryInSeconds;
-    private Algorithm algorithm;
 //    private String USERNAME_KEY = env.getProperty("jwt.USERNAME_KEY");
 //    private String ROLE_KEY = env.getProperty("jwt.ROLE_KEY");
     private static final String USERNAME_KEY = "USERNAME";
     private static final String ROLE_KEY = "ROLE";
-
-    @PostConstruct
-    public void postConstruct() {
-        algorithm = Algorithm.HMAC256(algorithmKey);
-    }
-
-    @Override
-    public String generateJWT(Users user, Roles role) {
-        return JWT.create()
-                .withClaim(USERNAME_KEY, user.getUsername())
-                .withClaim(ROLE_KEY, role.getName())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
-                .withIssuer(issuer)
-                .sign(algorithm);
-    }
 
     @Override
     public String getUsername(String token) {
