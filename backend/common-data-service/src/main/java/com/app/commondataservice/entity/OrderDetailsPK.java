@@ -5,9 +5,9 @@
 package com.app.commondataservice.entity;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 /**
  *
@@ -73,7 +73,7 @@ public class OrderDetailsPK implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.model.OrderDetailsPK[ orderId=" + orderId + ", productId=" + productId + " ]";
+        return "com.app.commondataservice.entity.OrderDetailsPK[ orderId=" + orderId + ", productId=" + productId + " ]";
     }
     
 }

@@ -4,25 +4,26 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  *
@@ -31,9 +32,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "orders")
 @NamedQueries({
-    @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o"),
-    @NamedQuery(name = "Orders.findById", query = "SELECT o FROM Orders o WHERE o.id = :id"),
-    @NamedQuery(name = "Orders.findByOrderDate", query = "SELECT o FROM Orders o WHERE o.orderDate = :orderDate")})
+    @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o")})
 public class Orders implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,9 +44,11 @@ public class Orders implements Serializable {
     @Column(name = "order_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+    @JsonIgnore
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users customerId;
+    private Users users;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orders", fetch = FetchType.LAZY)
     private Collection<OrderDetails> orderDetailsCollection;
 
@@ -74,12 +75,12 @@ public class Orders implements Serializable {
         this.orderDate = orderDate;
     }
 
-    public Users getCustomerId() {
-        return customerId;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setCustomerId(Users customerId) {
-        this.customerId = customerId;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public Collection<OrderDetails> getOrderDetailsCollection() {
@@ -112,7 +113,7 @@ public class Orders implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.model.Orders[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.Orders[ id=" + id + " ]";
     }
-    
+
 }

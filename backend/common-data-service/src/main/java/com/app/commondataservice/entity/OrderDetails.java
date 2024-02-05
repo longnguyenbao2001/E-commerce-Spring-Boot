@@ -4,17 +4,18 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 
 /**
  *
@@ -23,10 +24,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "order_details")
 @NamedQueries({
-    @NamedQuery(name = "OrderDetails.findAll", query = "SELECT o FROM OrderDetails o"),
-    @NamedQuery(name = "OrderDetails.findByQuantity", query = "SELECT o FROM OrderDetails o WHERE o.quantity = :quantity"),
-    @NamedQuery(name = "OrderDetails.findByOrderId", query = "SELECT o FROM OrderDetails o WHERE o.orderDetailsPK.orderId = :orderId"),
-    @NamedQuery(name = "OrderDetails.findByProductId", query = "SELECT o FROM OrderDetails o WHERE o.orderDetailsPK.productId = :productId")})
+    @NamedQuery(name = "OrderDetails.findAll", query = "SELECT o FROM OrderDetails o")})
 public class OrderDetails implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,9 +33,11 @@ public class OrderDetails implements Serializable {
     @Basic(optional = false)
     @Column(name = "quantity")
     private int quantity;
+    @JsonIgnore
     @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Orders orders;
+    @JsonIgnore
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Products products;
@@ -112,7 +112,7 @@ public class OrderDetails implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.model.OrderDetails[ orderDetailsPK=" + orderDetailsPK + " ]";
+        return "com.app.commondataservice.entity.OrderDetails[ orderDetailsPK=" + orderDetailsPK + " ]";
     }
-    
+
 }

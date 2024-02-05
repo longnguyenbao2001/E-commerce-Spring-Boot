@@ -4,23 +4,24 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 /**
  *
@@ -29,12 +30,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "products")
 @NamedQueries({
-    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p"),
-    @NamedQuery(name = "Products.findById", query = "SELECT p FROM Products p WHERE p.id = :id"),
-    @NamedQuery(name = "Products.findByName", query = "SELECT p FROM Products p WHERE p.name = :name"),
-    @NamedQuery(name = "Products.findByDescription", query = "SELECT p FROM Products p WHERE p.description = :description"),
-    @NamedQuery(name = "Products.findByPrice", query = "SELECT p FROM Products p WHERE p.price = :price"),
-    @NamedQuery(name = "Products.findByQuantity", query = "SELECT p FROM Products p WHERE p.quantity = :quantity")})
+    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p")})
 public class Products implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,12 +54,14 @@ public class Products implements Serializable {
     private int quantity;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "products", fetch = FetchType.LAZY)
     private Collection<OrderDetails> orderDetailsCollection;
+    @JsonIgnore
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Categories categoryId;
+    private Categories categories;
+    @JsonIgnore
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users sellerId;
+    private Users users;
 
     public Products() {
     }
@@ -128,20 +126,20 @@ public class Products implements Serializable {
         this.orderDetailsCollection = orderDetailsCollection;
     }
 
-    public Categories getCategoryId() {
-        return categoryId;
+    public Categories getCategories() {
+        return categories;
     }
 
-    public void setCategoryId(Categories categoryId) {
-        this.categoryId = categoryId;
+    public void setCategories(Categories categories) {
+        this.categories = categories;
     }
 
-    public Users getSellerId() {
-        return sellerId;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setSellerId(Users sellerId) {
-        this.sellerId = sellerId;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     @Override
@@ -166,7 +164,7 @@ public class Products implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.model.Products[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.Products[ id=" + id + " ]";
     }
-    
+
 }

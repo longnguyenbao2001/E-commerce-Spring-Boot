@@ -52,3 +52,38 @@ CREATE TABLE order_details (
 
 INSERT INTO roles (name)
 VALUES ('USER'), ('ADMIN');
+
+INSERT INTO users (username, email, first_name, last_name, password, role_id)
+VALUES 
+('username1', 'username1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1), 
+('username2', 'username2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
+('username3', 'username3@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
+('username4', 'username4@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1);
+
+INSERT INTO categories (name, description)
+VALUES 
+('category 1', 'category description 1'), 
+('category 2', 'category description 2'), 
+('category 3', 'category description 3');
+
+INSERT INTO products (name, description, price, quantity, seller_id, category_id)
+VALUES 
+('product 1', 'product description 1', 100000, 10, 1, 1), 
+('product 2', 'product description 2', 100000, 10, 1, 1),
+('product 3', 'product description 3', 100000, 10, 1, 1),
+('product 4', 'product description 4', 100000, 10, 1, 1),
+('product 5', 'product description 5', 100000, 10, 1, 1),
+('product 6', 'product description 6', 100000, 10, 1, 1),
+('product 7', 'product description 7', 100000, 10, 1, 1),
+('product 8', 'product description 8', 100000, 10, 1, 1),
+('product 9', 'product description 9', 100000, 10, 1, 1),
+('product 10', 'product description 10', 100000, 10, 1, 1);
+
+INSERT INTO orders (customer_id)
+VALUES (1);
+
+INSERT INTO order_details (order_id, product_id, quantity)
+VALUES 
+(1, 1, 10), 
+(1, 2, 5),
+(1, 3, 7);

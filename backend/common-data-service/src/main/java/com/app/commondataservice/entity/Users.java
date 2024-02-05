@@ -6,17 +6,19 @@ package com.app.commondataservice.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 /**
  *
@@ -25,13 +27,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
-    @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id"),
-    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
-    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
-    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
-    @NamedQuery(name = "Users.findByFirstName", query = "SELECT u FROM Users u WHERE u.firstName = :firstName"),
-    @NamedQuery(name = "Users.findByLastName", query = "SELECT u FROM Users u WHERE u.lastName = :lastName")})
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,9 +51,12 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
-    @OneToMany(mappedBy = "customerId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private Collection<Orders> ordersCollection;
-    @OneToMany(mappedBy = "sellerId", fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Roles roles;
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private Collection<Products> productsCollection;
 
     public Users() {
@@ -132,6 +131,14 @@ public class Users implements Serializable {
         this.ordersCollection = ordersCollection;
     }
 
+    public Roles getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Roles roles) {
+        this.roles = roles;
+    }
+
     public Collection<Products> getProductsCollection() {
         return productsCollection;
     }
@@ -162,7 +169,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.model.Users[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.Users[ id=" + id + " ]";
     }
     
 }

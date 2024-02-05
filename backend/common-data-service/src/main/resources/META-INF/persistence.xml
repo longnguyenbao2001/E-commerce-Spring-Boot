@@ -7,6 +7,12 @@
     <class>com.app.commondataservice.model.Users</class>
     <class>com.app.commondataservice.model.Orders</class>
     <class>com.app.commondataservice.model.OrderDetails</class>
+    <class>com.app.commondataservice.entity.Orders</class>
+    <class>com.app.commondataservice.entity.OrderDetails</class>
+    <class>com.app.commondataservice.entity.Roles</class>
+    <class>com.app.commondataservice.entity.Products</class>
+    <class>com.app.commondataservice.entity.Categories</class>
+    <class>com.app.commondataservice.entity.Users</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ecommerce"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>

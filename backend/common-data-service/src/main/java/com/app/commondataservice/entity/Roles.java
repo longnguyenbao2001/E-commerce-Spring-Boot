@@ -23,10 +23,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "categories")
+@Table(name = "roles")
 @NamedQueries({
-    @NamedQuery(name = "Categories.findAll", query = "SELECT c FROM Categories c")})
-public class Categories implements Serializable {
+    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")})
+public class Roles implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,23 +37,19 @@ public class Categories implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
-    @Column(name = "description")
-    private String description;
-    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY)
-    private Collection<Products> productsCollection;
+    @OneToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection;
 
-    public Categories() {
+    public Roles() {
     }
 
-    public Categories(Long id) {
+    public Roles(Long id) {
         this.id = id;
     }
 
-    public Categories(Long id, String name, String description) {
+    public Roles(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.description = description;
     }
 
     public Long getId() {
@@ -72,20 +68,12 @@ public class Categories implements Serializable {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Collection<Products> getProductsCollection() {
-        return productsCollection;
-    }
-
-    public void setProductsCollection(Collection<Products> productsCollection) {
-        this.productsCollection = productsCollection;
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @Override
@@ -98,10 +86,10 @@ public class Categories implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Categories)) {
+        if (!(object instanceof Roles)) {
             return false;
         }
-        Categories other = (Categories) object;
+        Roles other = (Roles) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -110,7 +98,7 @@ public class Categories implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.Categories[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.Roles[ id=" + id + " ]";
     }
     
 }
