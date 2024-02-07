@@ -1,7 +1,7 @@
 SELECT id, "name"
 FROM public.roles;
 
-SELECT id, username, "password", email, first_name, last_name, role_id
+SELECT id, username, "password", email, first_name, last_name, role_id, email_verified
 FROM public.users;
 
 SELECT id, "token", created_timestamp, user_id

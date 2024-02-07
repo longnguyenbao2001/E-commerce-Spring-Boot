@@ -4,6 +4,7 @@
  */
 package com.app.userservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -19,7 +20,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 
@@ -54,13 +54,13 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
+    @Basic(optional = false)
     @Column(name = "email_verified")
-    private Boolean emailVerified;
+    private boolean emailVerified;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch = FetchType.LAZY)
-    @OrderBy("id desc")
     private List<VerificationTokens> verificationTokensList;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Roles roles;
 
     public Users() {
@@ -71,13 +71,14 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Users(Long id, String username, String password, String email, String firstName, String lastName) {
+    public Users(Long id, String username, String password, String email, String firstName, String lastName, boolean emailVerified) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.emailVerified = emailVerified;
     }
 
     public Long getId() {
@@ -128,11 +129,11 @@ public class Users implements Serializable {
         this.lastName = lastName;
     }
 
-    public Boolean getEmailVerified() {
+    public boolean getEmailVerified() {
         return emailVerified;
     }
 
-    public void setEmailVerified(Boolean emailVerified) {
+    public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
     }
 

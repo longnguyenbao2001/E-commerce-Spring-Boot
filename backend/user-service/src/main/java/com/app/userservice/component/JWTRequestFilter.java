@@ -4,6 +4,7 @@
  */
 package com.app.userservice.component;
 
+import com.app.userservice.entity.Roles;
 import com.app.userservice.service.JWTService;
 import com.app.userservice.service.UserService;
 import com.app.userservice.entity.Users;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,6 +40,9 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Environment env;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String tokenHeader = request.getHeader("Authorization");
@@ -45,13 +50,18 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             String token = tokenHeader.substring(7);
             try {
                 String username = jwtService.getUsername(token);
-                String roleName = jwtService.getRoleName(token);
 
                 Optional<Users> opUser = userService.findByUsername(username);
                 if (opUser.isPresent()) {
                     Users user = opUser.get();
-                    //might need a role check
-                    List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(roleName));
+                    Roles role = user.getRoles();
+
+                    List<GrantedAuthority> authorities;
+                    if (role != null) {
+                        authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
+                    } else {
+                        authorities = Collections.singletonList(new SimpleGrantedAuthority(env.getProperty("role.user")));
+                    }
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

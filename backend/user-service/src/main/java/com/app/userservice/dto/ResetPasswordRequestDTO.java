@@ -6,26 +6,30 @@ package com.app.userservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  *
  * @author user
  */
-public class SignInUserRequestDTO {
-    
+public class ResetPasswordRequestDTO {
+
+    @NotBlank
+    @NotNull
+    private String token;
     @NotNull
     @NotBlank
-    private String username;
-    @NotNull
-    @NotBlank
+    @Size(min = 6, max = 32)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getToken() {
+        return token;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getPassword() {
@@ -35,6 +39,5 @@ public class SignInUserRequestDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
+
 }

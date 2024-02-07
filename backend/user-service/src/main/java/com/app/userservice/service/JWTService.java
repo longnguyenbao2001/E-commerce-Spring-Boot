@@ -13,11 +13,13 @@ import com.app.userservice.entity.Users;
  */
 public interface JWTService {
 
-    public String generateJWT(Users user, Roles role);
+    public String generateJWTAccessToken(Users user);
+
+    public String generateJWTVerificationToken(Users user);
+
+    public String generateJWTPasswordResetToken(Users user);
 
     public String getUsername(String token);
 
-    public String getRoleName(String token);
-
-    public String generateVerificationJWT(Users user);
+    public String getPasswordResetEmail(String token);
 }

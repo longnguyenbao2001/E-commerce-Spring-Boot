@@ -9,6 +9,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.app.userservice.entity.Users;
 import com.app.userservice.service.JWTService;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,14 +31,16 @@ public class JWTServiceImpl implements JWTService {
     private String algorithmKey;
     @Value("${jwt.issuer}")
     private String issuer;
-    @Value("${jwt.expiryInSeconds}")
-    private int expiryInSeconds;
+    @Value("${jwt.accessToken.expiryTimeInMilliSeconds}")
+    private int accessTokenExpiryTime;
+    @Value("${jwt.verificationToken.expiryTimeInMilliSeconds}")
+    private int verificationTokenExpiryTime;
+    @Value("${jwt.passwordResetToken.expiryTimeInMilliSeconds}")
+    private int passwordResetTokenExpiryTime;
     private Algorithm algorithm;
-//    private String USERNAME_KEY = env.getProperty("jwt.USERNAME_KEY");
-//    private String ROLE_KEY = env.getProperty("jwt.ROLE_KEY");
     private static final String USERNAME_KEY = "USERNAME";
-    private static final String ROLE_KEY = "ROLE";
-    private static final String EMAIL_KEY = "EMAIL";
+    private static final String VERIFICATION_EMAIL_KEY = "VERIFICATION_EMAIL";
+    private static final String PASSWORD_RESET_EMAIL_KEY = "PASSWORD_RESET_EMAIL";
 
     @PostConstruct
     public void postConstruct() {
@@ -45,32 +48,43 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String generateJWT(Users user, Roles role) {
+    public String generateJWTAccessToken(Users user) {
         return JWT.create()
                 .withClaim(USERNAME_KEY, user.getUsername())
-                .withClaim(ROLE_KEY, role.getName())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiryTime))
+                .withIssuer(issuer)
+                .sign(algorithm);
+    }
+
+    //ExpiresAt much later after resend time limit
+    @Override
+    public String generateJWTVerificationToken(Users user) {
+        return JWT.create()
+                .withClaim(VERIFICATION_EMAIL_KEY, user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + verificationTokenExpiryTime))
+                .withIssuer(issuer)
+                .sign(algorithm);
+    }
+
+    @Override
+    public String generateJWTPasswordResetToken(Users user) {
+        return JWT.create()
+                .withClaim(USERNAME_KEY, user.getUsername())
+                .withClaim(PASSWORD_RESET_EMAIL_KEY, user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis() + passwordResetTokenExpiryTime))
                 .withIssuer(issuer)
                 .sign(algorithm);
     }
 
     @Override
     public String getUsername(String token) {
-        return JWT.decode(token).getClaim(USERNAME_KEY).asString();
+        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+        return jwt.getClaim(USERNAME_KEY).asString();
     }
 
     @Override
-    public String getRoleName(String token) {
-        return JWT.decode(token).getClaim(ROLE_KEY).asString();
+    public String getPasswordResetEmail(String token) {
+        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+        return jwt.getClaim(PASSWORD_RESET_EMAIL_KEY).asString();
     }
-
-    @Override
-    public String generateVerificationJWT(Users user) {
-        return JWT.create()
-                .withClaim(EMAIL_KEY, user.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
-                .withIssuer(issuer)
-                .sign(algorithm);
-    }
-
 }

@@ -4,6 +4,7 @@
  */
 package com.app.userservice.service;
 
+import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.entity.VerificationTokens;
 import com.app.userservice.exception.EmailFailureException;
 
@@ -14,4 +15,6 @@ import com.app.userservice.exception.EmailFailureException;
 public interface EmailService {
 
     public void sendVerificationEmail(VerificationTokens verificationToken) throws EmailFailureException;
+
+    public void sendPasswordResetEmail(ForgotPasswordRequestDTO forgotPasswordRequestDTO, String passwordResetToken) throws EmailFailureException;
 }

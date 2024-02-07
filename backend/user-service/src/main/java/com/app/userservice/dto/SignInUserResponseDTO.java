@@ -8,20 +8,20 @@ package com.app.userservice.dto;
  *
  * @author user
  */
-public class LoginUserResponseDTO {
+public class SignInUserResponseDTO {
 
-    private String jwt;
+    private String jwtAccessToken;
 
     private boolean success;
 
     private String message;
 
-    public String getJwt() {
-        return jwt;
+    public String getJwtAccessToken() {
+        return jwtAccessToken;
     }
 
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setJwtAccessToken(String jwtAccessToken) {
+        this.jwtAccessToken = jwtAccessToken;
     }
 
     public boolean isSuccess() {

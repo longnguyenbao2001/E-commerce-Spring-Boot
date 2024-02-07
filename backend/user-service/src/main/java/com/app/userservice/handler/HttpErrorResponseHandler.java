@@ -53,4 +53,11 @@ public class HttpErrorResponseHandler {
     public ResponseEntity<?> handleForbiddenRequest(Object object) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(object);
     }
+
+    public ResponseEntity<?> handleForbiddenRequest(String errMessage) {
+        Map<String, String> response = new HashMap<>();
+        response.put(env.getProperty("mes.message"), errMessage);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 }

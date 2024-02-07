@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size;
  *
  * @author user
  */
-public class NewUserRequestDTO {
+public class SignUpUserRequestDTO {
     @NotNull
     @NotBlank
     @Size(min = 3, max = 50)

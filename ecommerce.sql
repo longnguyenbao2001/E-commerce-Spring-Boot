@@ -12,7 +12,7 @@ CREATE TABLE users (
 	email VARCHAR(255) NOT NULL,
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(255) NOT null,
-	email_verified BOOLEAN DEFAULT false,
+	email_verified BOOLEAN NOT null DEFAULT false,
 	role_id BIGINT,
 	foreign key(role_id) references roles(id) on delete set null
 );

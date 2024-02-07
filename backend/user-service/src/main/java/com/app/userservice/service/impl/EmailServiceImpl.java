@@ -4,6 +4,7 @@
  */
 package com.app.userservice.service.impl;
 
+import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.entity.VerificationTokens;
 import com.app.userservice.service.EmailService;
 import com.app.userservice.exception.EmailFailureException;
@@ -27,7 +28,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${app.frontend.mail.verification.url}")
     private String url;
     @Value("${app.frontend.mail.verification.endpoint}")
-    private String endpoint;
+    private String emailVerificationEndpoint;
+    @Value("${app.frontend.mail.passwordReset.endpoint}")
+    private String passwordResetEndpoint;
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -50,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
         message.setText(String.format("%s%s%s%s",
                 env.getProperty("mes.mail.verification.content"),
                 url,
-                endpoint,
+                emailVerificationEndpoint,
                 verificationTokens.getToken()));
 
         try {
@@ -59,4 +62,23 @@ public class EmailServiceImpl implements EmailService {
             throw new EmailFailureException();
         }
     }
+
+    @Override
+    public void sendPasswordResetEmail(ForgotPasswordRequestDTO forgotPasswordRequestDTO,
+            String passwordResetToken) throws EmailFailureException {
+        SimpleMailMessage message = makeMailMessage();
+        message.setTo(forgotPasswordRequestDTO.getEmail());
+        message.setSubject(env.getProperty("mes.mail.resetPassword.subject"));
+        message.setText(String.format("%s%s%s%s",
+                env.getProperty("mes.mail.resetPassword.content"),
+                url,
+                passwordResetEndpoint,
+                passwordResetToken));
+        try {
+            javaMailSender.send(message);
+        } catch (MailException ex) {
+            throw new EmailFailureException();
+        }
+    }
+
 }

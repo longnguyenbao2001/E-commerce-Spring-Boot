@@ -4,12 +4,17 @@
  */
 package com.app.userservice.service;
 
-import com.app.userservice.dto.LoginUserRequestDTO;
-import com.app.userservice.dto.NewUserRequestDTO;
+import com.app.userservice.dto.ForgotPasswordRequestDTO;
+import com.app.userservice.dto.ResetPasswordRequestDTO;
+import com.app.userservice.dto.SignInUserRequestDTO;
+import com.app.userservice.dto.SignUpUserRequestDTO;
+import com.app.userservice.dto.SignInUserResponseDTO;
 import com.app.userservice.dto.UserDTO;
 import com.app.userservice.entity.Users;
 import com.app.userservice.exception.EmailFailureException;
+import com.app.userservice.exception.EmailNotAssosiatedWithUserException;
 import com.app.userservice.exception.UserAlreadyExistsException;
+import com.app.userservice.exception.UserNotExistedException;
 import com.app.userservice.exception.UserNotVerifiedException;
 import java.util.Optional;
 
@@ -21,9 +26,18 @@ public interface UserService {
 
     public Optional<Users> findByUsername(String username);
 
-    public UserDTO signUp(NewUserRequestDTO newUserRequestDTO) throws UserAlreadyExistsException, EmailFailureException;
+    public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
+            throws UserAlreadyExistsException, EmailFailureException;
 
-    public String signIn(LoginUserRequestDTO loginUserRequestDTO) throws UserNotVerifiedException, EmailFailureException;
+    public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
+            throws UserNotVerifiedException, EmailFailureException, UserNotExistedException;
 
-    public boolean verifyUser(String token);
+    public boolean verifyUser(String token)
+            throws UserNotExistedException;
+
+    public void forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
+            throws UserNotExistedException, EmailNotAssosiatedWithUserException, EmailFailureException;
+
+    public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
+            throws UserNotExistedException, EmailNotAssosiatedWithUserException;
 }

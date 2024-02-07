@@ -31,7 +31,11 @@ public class SecurityConfig {
                 .cors().disable()
                 .authorizeRequests(authorizeRequests
                         -> authorizeRequests
-                        .requestMatchers("/auth/signup", "/auth/signin", "/auth/verify").permitAll()
+                        .requestMatchers("/auth/signup",
+                                "/auth/signin",
+                                "/auth/verify",
+                                "/auth/forgot",
+                                "/auth/reset").permitAll()
                         .requestMatchers("/auth/me").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
