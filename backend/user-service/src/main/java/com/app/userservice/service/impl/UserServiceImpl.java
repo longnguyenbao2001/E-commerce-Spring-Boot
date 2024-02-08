@@ -7,6 +7,7 @@ package com.app.userservice.service.impl;
 import com.app.userservice.component.UserConverter;
 import com.app.userservice.service.EncryptionService;
 import com.app.userservice.service.JWTService;
+import com.app.userservice.service.RoleService;
 import com.app.userservice.dao.UserRepository;
 import com.app.userservice.dao.VerificationTokenRepository;
 import com.app.userservice.dto.ForgotPasswordRequestDTO;
@@ -54,6 +55,9 @@ public class UserServiceImpl implements UserService {
     private UserConverter userConverter;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
     private EncryptionService encryptionService;
 
     @Autowired
@@ -83,7 +87,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO) throws UserAlreadyExistsException, EmailFailureException {
+    public Optional<Users> findByUserId(Long userId) throws UserNotExistedException {
+        Optional<Users> res = userRepository.findById(userId);
+        if (!res.isPresent()) {
+            throw new UserNotExistedException();
+        }
+
+        return res;
+    }
+
+    @Override
+    public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
+            throws UserAlreadyExistsException, EmailFailureException {
         Optional<Users> existingUser = findByUsername(signUpUserRequestDTO.getUsername());
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException();
@@ -95,6 +110,11 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(signUpUserRequestDTO.getFirstName());
         user.setLastName(signUpUserRequestDTO.getLastName());
         user.setPassword(encryptionService.encryptPassword(signUpUserRequestDTO.getPassword()));
+
+        Roles role = roleService.findByName(env.getProperty("role.user")).get(0);
+        if (role != null) {
+            user.setRoles(role);
+        }
 
         user = userRepository.save(user);
 
@@ -109,38 +129,38 @@ public class UserServiceImpl implements UserService {
     public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
             throws UserNotVerifiedException, EmailFailureException, UserNotExistedException {
         Optional<Users> existingUser = findByUsername(signInUserRequestDTO.getUsername());
-        SignInUserResponseDTO signInUserResponseDTO = null;
-
-        if (existingUser.isPresent()) {
-            Users user = existingUser.get();
-            if (encryptionService.verifyPassword(signInUserRequestDTO.getPassword(), user.getPassword())) {
-                if (user.getEmailVerified()) {
-                    signInUserResponseDTO = new SignInUserResponseDTO();
-                    signInUserResponseDTO.setJwtAccessToken(jWTService.generateJWTAccessToken(user));
-                    signInUserResponseDTO.setSuccess(true);
-
-                    return signInUserResponseDTO;
-                } else {
-                    List<VerificationTokens> verificationTokenses = user.getVerificationTokensList();
-                    boolean isNeedResend = verificationTokenses.isEmpty()
-                            || verificationTokenses
-                                    .get(0)
-                                    .getCreatedTimestamp()
-                                    .before(new Timestamp(System.currentTimeMillis() - (resendAfter)));
-
-                    if (isNeedResend) {
-                        VerificationTokens verificationTokens = createVerificationToken(user);
-                        emailService.sendVerificationEmail(verificationTokens);
-                        verificationTokenRepository.save(verificationTokens);
-                    }
-
-                    throw new UserNotVerifiedException(isNeedResend);
-                }
-            }
-            return signInUserResponseDTO;
+        if (!existingUser.isPresent()) {
+            throw new UserNotExistedException();
         }
 
-        throw new UserNotExistedException();
+        SignInUserResponseDTO signInUserResponseDTO = null;
+        Users user = existingUser.get();
+        if (encryptionService.verifyPassword(signInUserRequestDTO.getPassword(), user.getPassword())) {
+            if (user.getEmailVerified()) {
+                signInUserResponseDTO = new SignInUserResponseDTO();
+                signInUserResponseDTO.setJwtAccessToken(jWTService.generateJWTAccessToken(user));
+                signInUserResponseDTO.setSuccess(true);
+
+                return signInUserResponseDTO;
+            } else {
+                List<VerificationTokens> verificationTokenses = user.getVerificationTokensList();
+
+                boolean isNeedResend = verificationTokenses.isEmpty()
+                        || verificationTokenses
+                                .get(0)
+                                .getCreatedTimestamp()
+                                .before(new Timestamp(System.currentTimeMillis() - (resendAfter)));
+
+                if (isNeedResend) {
+                    VerificationTokens verificationTokens = createVerificationToken(user);
+                    emailService.sendVerificationEmail(verificationTokens);
+                    verificationTokenRepository.save(verificationTokens);
+                }
+
+                throw new UserNotVerifiedException(isNeedResend);
+            }
+        }
+        return signInUserResponseDTO;
     }
 
     @Override
@@ -165,17 +185,17 @@ public class UserServiceImpl implements UserService {
     public void forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
             throws UserNotExistedException, EmailNotAssosiatedWithUserException, EmailFailureException {
         Optional<Users> opUser = userRepository.findByUsername(forgotPasswordRequestDTO.getUsername());
-        if (opUser.isPresent()) {
-            Users user = opUser.get();
-            if (user.getEmail().equals(forgotPasswordRequestDTO.getEmail())) {
-                String token = jWTService.generateJWTPasswordResetToken(user);
-                emailService.sendPasswordResetEmail(forgotPasswordRequestDTO, token);
-            } else {
-                throw new EmailNotAssosiatedWithUserException();
-            }
-        } else {
+        if (!opUser.isPresent()) {
             throw new UserNotExistedException();
         }
+
+        Users user = opUser.get();
+        if (!user.getEmail().equals(forgotPasswordRequestDTO.getEmail())) {
+            throw new EmailNotAssosiatedWithUserException();
+        }
+
+        String token = jWTService.generateJWTPasswordResetToken(user);
+        emailService.sendPasswordResetEmail(forgotPasswordRequestDTO, token);
     }
 
     @Override
@@ -185,16 +205,17 @@ public class UserServiceImpl implements UserService {
         String email = jWTService.getPasswordResetEmail(resetPasswordRequestDTO.getToken());
 
         Optional<Users> opUser = userRepository.findByUsername(username);
-        if (opUser.isPresent()) {
-            Users user = opUser.get();
-            if (user.getEmail().equals(email)) {
-                user.setPassword(encryptionService.encryptPassword(resetPasswordRequestDTO.getPassword()));
-                userRepository.save(user);
-            } else {
-                throw new EmailNotAssosiatedWithUserException();
-            }
-        } else {
+        if (!opUser.isPresent()) {
             throw new UserNotExistedException();
         }
+
+        Users user = opUser.get();
+        if (!user.getEmail().equals(email)) {
+            throw new EmailNotAssosiatedWithUserException();
+
+        }
+
+        user.setPassword(encryptionService.encryptPassword(resetPasswordRequestDTO.getPassword()));
+        userRepository.save(user);
     }
 }

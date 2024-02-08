@@ -26,6 +26,9 @@ public interface UserService {
 
     public Optional<Users> findByUsername(String username);
 
+    public Optional<Users> findByUserId(Long userId)
+            throws UserNotExistedException;
+
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
             throws UserAlreadyExistsException, EmailFailureException;
 

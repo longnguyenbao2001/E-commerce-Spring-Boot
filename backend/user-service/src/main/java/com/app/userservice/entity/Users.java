@@ -4,7 +4,6 @@
  */
 package com.app.userservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -20,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 
@@ -58,7 +58,10 @@ public class Users implements Serializable {
     @Column(name = "email_verified")
     private boolean emailVerified;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch = FetchType.LAZY)
+    @OrderBy("id desc")
     private List<VerificationTokens> verificationTokensList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users", fetch = FetchType.LAZY)
+    private List<ShipAddresses> shipAddressesList;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.EAGER)
     private Roles roles;
@@ -143,6 +146,14 @@ public class Users implements Serializable {
 
     public void setVerificationTokensList(List<VerificationTokens> verificationTokensList) {
         this.verificationTokensList = verificationTokensList;
+    }
+
+    public List<ShipAddresses> getShipAddressesList() {
+        return shipAddressesList;
+    }
+
+    public void setShipAddressesList(List<ShipAddresses> shipAddressesList) {
+        this.shipAddressesList = shipAddressesList;
     }
 
     public Roles getRoles() {

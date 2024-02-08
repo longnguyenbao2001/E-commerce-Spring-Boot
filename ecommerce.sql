@@ -17,6 +17,18 @@ CREATE TABLE users (
 	foreign key(role_id) references roles(id) on delete set null
 );
 
+CREATE TABLE ship_addresses (
+	id BIGSERIAL PRIMARY KEY,
+	address_line_1 VARCHAR(500) NOT NULL,
+	address_line_2 VARCHAR(500),
+	city VARCHAR(255) NOT NULL,
+	country VARCHAR(255) NOT NULL,
+	phone_number VARCHAR(10) NOT NULL,
+	user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
+);
+
+
 CREATE TABLE verification_tokens (
     id BIGSERIAL PRIMARY KEY,
     token TEXT NOT NULL UNIQUE,

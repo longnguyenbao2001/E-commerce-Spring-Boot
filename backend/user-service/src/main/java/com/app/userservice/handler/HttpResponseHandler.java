@@ -5,6 +5,7 @@
 package com.app.userservice.handler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,19 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HttpResponseHandler {
+
     public ResponseEntity<?> handleAcceptedRequest(String message) {
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
-    
+
     public ResponseEntity<?> handleAcceptedRequest(Object object) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(object);
+    }
+
+    public ResponseEntity<?> handleAcceptedRequest(List<Object> list) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 }
