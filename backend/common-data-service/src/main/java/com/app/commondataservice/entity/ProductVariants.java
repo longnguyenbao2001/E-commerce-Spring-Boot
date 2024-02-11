@@ -5,9 +5,8 @@
 package com.app.commondataservice.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.math.BigDecimal;
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -26,10 +24,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "products")
+@Table(name = "product_variants")
 @NamedQueries({
-    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p")})
-public class Products implements Serializable {
+    @NamedQuery(name = "ProductVariants.findAll", query = "SELECT p FROM ProductVariants p")})
+public class ProductVariants implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,31 +38,32 @@ public class Products implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
-    @Column(name = "description")
-    private String description;
-    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
-    private List<ProductVariants> productVariantsList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "products", fetch = FetchType.LAZY)
-    private List<OrderDetails> orderDetailsList;
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @Column(name = "unit_price")
+    private BigDecimal unitPrice;
+    @Basic(optional = false)
+    @Column(name = "quantity")
+    private int quantity;
+    @JoinColumn(name = "product_variant_label_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Categories categories;
-    @JoinColumn(name = "seller_id", referencedColumnName = "id")
+    private ProductVariantLabels productVariantLabels;
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Products products;
 
-    public Products() {
+    public ProductVariants() {
     }
 
-    public Products(Long id) {
+    public ProductVariants(Long id) {
         this.id = id;
     }
 
-    public Products(Long id, String name, String description) {
+    public ProductVariants(Long id, String name, BigDecimal unitPrice, int quantity) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.unitPrice = unitPrice;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -83,44 +82,36 @@ public class Products implements Serializable {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
-    public List<ProductVariants> getProductVariantsList() {
-        return productVariantsList;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setProductVariantsList(List<ProductVariants> productVariantsList) {
-        this.productVariantsList = productVariantsList;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public List<OrderDetails> getOrderDetailsList() {
-        return orderDetailsList;
+    public ProductVariantLabels getProductVariantLabels() {
+        return productVariantLabels;
     }
 
-    public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
-        this.orderDetailsList = orderDetailsList;
+    public void setProductVariantLabels(ProductVariantLabels productVariantLabels) {
+        this.productVariantLabels = productVariantLabels;
     }
 
-    public Categories getCategories() {
-        return categories;
+    public Products getProducts() {
+        return products;
     }
 
-    public void setCategories(Categories categories) {
-        this.categories = categories;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setProducts(Products products) {
+        this.products = products;
     }
 
     @Override
@@ -133,10 +124,10 @@ public class Products implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Products)) {
+        if (!(object instanceof ProductVariants)) {
             return false;
         }
-        Products other = (Products) object;
+        ProductVariants other = (ProductVariants) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -145,7 +136,7 @@ public class Products implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.Products[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.ProductVariants[ id=" + id + " ]";
     }
 
 }

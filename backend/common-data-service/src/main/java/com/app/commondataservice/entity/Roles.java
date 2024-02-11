@@ -5,7 +5,7 @@
 package com.app.commondataservice.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +38,7 @@ public class Roles implements Serializable {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Collection<Users> usersCollection;
+    private List<Users> usersList;
 
     public Roles() {
     }
@@ -68,12 +68,12 @@ public class Roles implements Serializable {
         this.name = name;
     }
 
-    public Collection<Users> getUsersCollection() {
-        return usersCollection;
+    public List<Users> getUsersList() {
+        return usersList;
     }
 
-    public void setUsersCollection(Collection<Users> usersCollection) {
-        this.usersCollection = usersCollection;
+    public void setUsersList(List<Users> usersList) {
+        this.usersList = usersList;
     }
 
     @Override
@@ -100,5 +100,5 @@ public class Roles implements Serializable {
     public String toString() {
         return "com.app.commondataservice.entity.Roles[ id=" + id + " ]";
     }
-    
+
 }

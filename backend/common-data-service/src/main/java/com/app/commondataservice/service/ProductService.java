@@ -4,6 +4,7 @@
  */
 package com.app.commondataservice.service;
 
+import com.app.commondataservice.dto.ProductDTO;
 import java.util.List;
 import com.app.commondataservice.entity.Products;
 
@@ -13,5 +14,5 @@ import com.app.commondataservice.entity.Products;
  */
 public interface ProductService {
 
-    public List<Products> getProducts();
+    public List<ProductDTO> getProducts(String keyword);
 }

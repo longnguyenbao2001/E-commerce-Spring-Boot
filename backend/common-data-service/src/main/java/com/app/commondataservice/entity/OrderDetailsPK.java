@@ -75,5 +75,5 @@ public class OrderDetailsPK implements Serializable {
     public String toString() {
         return "com.app.commondataservice.entity.OrderDetailsPK[ orderId=" + orderId + ", productId=" + productId + " ]";
     }
-    
+
 }

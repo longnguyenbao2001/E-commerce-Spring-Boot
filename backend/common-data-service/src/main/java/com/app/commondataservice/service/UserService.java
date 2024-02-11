@@ -13,5 +13,5 @@ import java.util.Optional;
  */
 public interface UserService {
 
-    public Optional<Users> findByUsername(String username);
+    public Optional<Users> getUserByUsername(String username);
 }

@@ -23,10 +23,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "categories")
+@Table(name = "product_variant_labels")
 @NamedQueries({
-    @NamedQuery(name = "Categories.findAll", query = "SELECT c FROM Categories c")})
-public class Categories implements Serializable {
+    @NamedQuery(name = "ProductVariantLabels.findAll", query = "SELECT p FROM ProductVariantLabels p")})
+public class ProductVariantLabels implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,19 +37,17 @@ public class Categories implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Column(name = "description")
-    private String description;
-    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY)
-    private List<Products> productsList;
+    @OneToMany(mappedBy = "productVariantLabels", fetch = FetchType.LAZY)
+    private List<ProductVariants> productVariantsList;
 
-    public Categories() {
+    public ProductVariantLabels() {
     }
 
-    public Categories(Long id) {
+    public ProductVariantLabels(Long id) {
         this.id = id;
     }
 
-    public Categories(Long id, String name) {
+    public ProductVariantLabels(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -70,20 +68,12 @@ public class Categories implements Serializable {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public List<ProductVariants> getProductVariantsList() {
+        return productVariantsList;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<Products> getProductsList() {
-        return productsList;
-    }
-
-    public void setProductsList(List<Products> productsList) {
-        this.productsList = productsList;
+    public void setProductVariantsList(List<ProductVariants> productVariantsList) {
+        this.productVariantsList = productVariantsList;
     }
 
     @Override
@@ -96,10 +86,10 @@ public class Categories implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Categories)) {
+        if (!(object instanceof ProductVariantLabels)) {
             return false;
         }
-        Categories other = (Categories) object;
+        ProductVariantLabels other = (ProductVariantLabels) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -108,7 +98,7 @@ public class Categories implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.Categories[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.ProductVariantLabels[ id=" + id + " ]";
     }
 
 }

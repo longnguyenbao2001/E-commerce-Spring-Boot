@@ -5,7 +5,7 @@
 package com.app.commondataservice.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,13 +51,16 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "last_name")
     private String lastName;
+    @Basic(optional = false)
+    @Column(name = "email_verified")
+    private boolean emailVerified;
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private Collection<Orders> ordersCollection;
+    private List<Orders> ordersList;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Roles roles;
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private Collection<Products> productsCollection;
+    private List<Products> productsList;
 
     public Users() {
     }
@@ -66,13 +69,14 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Users(Long id, String username, String password, String email, String firstName, String lastName) {
+    public Users(Long id, String username, String password, String email, String firstName, String lastName, boolean emailVerified) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.emailVerified = emailVerified;
     }
 
     public Long getId() {
@@ -123,12 +127,20 @@ public class Users implements Serializable {
         this.lastName = lastName;
     }
 
-    public Collection<Orders> getOrdersCollection() {
-        return ordersCollection;
+    public boolean getEmailVerified() {
+        return emailVerified;
     }
 
-    public void setOrdersCollection(Collection<Orders> ordersCollection) {
-        this.ordersCollection = ordersCollection;
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public List<Orders> getOrdersList() {
+        return ordersList;
+    }
+
+    public void setOrdersList(List<Orders> ordersList) {
+        this.ordersList = ordersList;
     }
 
     public Roles getRoles() {
@@ -139,12 +151,12 @@ public class Users implements Serializable {
         this.roles = roles;
     }
 
-    public Collection<Products> getProductsCollection() {
-        return productsCollection;
+    public List<Products> getProductsList() {
+        return productsList;
     }
 
-    public void setProductsCollection(Collection<Products> productsCollection) {
-        this.productsCollection = productsCollection;
+    public void setProductsList(List<Products> productsList) {
+        this.productsList = productsList;
     }
 
     @Override
@@ -171,5 +183,5 @@ public class Users implements Serializable {
     public String toString() {
         return "com.app.commondataservice.entity.Users[ id=" + id + " ]";
     }
-    
+
 }

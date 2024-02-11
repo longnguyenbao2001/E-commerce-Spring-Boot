@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
  *
  * @author user
  */
-
 @Component
-public class UserConverter {
+public class DTOConverter {
+
     @Autowired
     private ModelMapper modelMapper;
-    
-    public UserDTO convertUsertoUserDTO(Users user) {
+
+    public UserDTO convertUserToUserDTO(Users user) {
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
         return userDTO;

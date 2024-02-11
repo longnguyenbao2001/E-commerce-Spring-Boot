@@ -4,7 +4,7 @@
  */
 package com.app.userservice.service.impl;
 
-import com.app.userservice.component.UserConverter;
+import com.app.userservice.component.DTOConverter;
 import com.app.userservice.service.EncryptionService;
 import com.app.userservice.service.JWTService;
 import com.app.userservice.service.RoleService;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     private VerificationTokenRepository verificationTokenRepository;
 
     @Autowired
-    private UserConverter userConverter;
+    private DTOConverter userConverter;
 
     @Autowired
     private RoleService roleService;
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
         emailService.sendVerificationEmail(verificationTokens);
         verificationTokenRepository.save(verificationTokens);
 
-        return userConverter.convertUsertoUserDTO(user);
+        return userConverter.convertUserToUserDTO(user);
     }
 
     @Override

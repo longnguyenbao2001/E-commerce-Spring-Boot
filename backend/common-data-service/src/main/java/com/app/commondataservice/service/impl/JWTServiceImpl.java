@@ -9,6 +9,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.app.commondataservice.entity.Users;
 import com.app.commondataservice.service.JWTService;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,24 +27,14 @@ public class JWTServiceImpl implements JWTService {
     @Autowired
     private Environment env;
 
-    @Value("${jwt.algorithm.key}")
-    private String algorithmKey;
     @Value("${jwt.issuer}")
     private String issuer;
-    @Value("${jwt.expiryInSeconds}")
-//    private String USERNAME_KEY = env.getProperty("jwt.USERNAME_KEY");
-//    private String ROLE_KEY = env.getProperty("jwt.ROLE_KEY");
+    private Algorithm algorithm;
     private static final String USERNAME_KEY = "USERNAME";
-    private static final String ROLE_KEY = "ROLE";
 
     @Override
     public String getUsername(String token) {
-        return JWT.decode(token).getClaim(USERNAME_KEY).asString();
+        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+        return jwt.getClaim(USERNAME_KEY).asString();
     }
-
-    @Override
-    public String getRoleName(String token) {
-        return JWT.decode(token).getClaim(ROLE_KEY).asString();
-    }
-
 }

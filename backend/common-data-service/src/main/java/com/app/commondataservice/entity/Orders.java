@@ -6,8 +6,8 @@ package com.app.commondataservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,7 +50,7 @@ public class Orders implements Serializable {
     private Users users;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orders", fetch = FetchType.LAZY)
-    private Collection<OrderDetails> orderDetailsCollection;
+    private List<OrderDetails> orderDetailsList;
 
     public Orders() {
     }
@@ -83,12 +83,12 @@ public class Orders implements Serializable {
         this.users = users;
     }
 
-    public Collection<OrderDetails> getOrderDetailsCollection() {
-        return orderDetailsCollection;
+    public List<OrderDetails> getOrderDetailsList() {
+        return orderDetailsList;
     }
 
-    public void setOrderDetailsCollection(Collection<OrderDetails> orderDetailsCollection) {
-        this.orderDetailsCollection = orderDetailsCollection;
+    public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
+        this.orderDetailsList = orderDetailsList;
     }
 
     @Override

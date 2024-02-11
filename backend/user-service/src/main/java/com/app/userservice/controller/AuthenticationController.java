@@ -4,7 +4,7 @@
  */
 package com.app.userservice.controller;
 
-import com.app.userservice.component.UserConverter;
+import com.app.userservice.component.DTOConverter;
 import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.dto.ResetPasswordRequestDTO;
 import com.app.userservice.dto.SignInUserRequestDTO;
@@ -53,7 +53,7 @@ public class AuthenticationController {
     private Environment env;
 
     @Autowired
-    private UserConverter userConverter;
+    private DTOConverter userConverter;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpUserRequestDTO signUpUserRequestDTO,
@@ -116,7 +116,7 @@ public class AuthenticationController {
     public ResponseEntity<?> getLoggedInUserProfile(@AuthenticationPrincipal Users user) {
 
         try {
-            return httpResponseHandler.handleAcceptedRequest(userConverter.convertUsertoUserDTO(user));
+            return httpResponseHandler.handleAcceptedRequest(userConverter.convertUserToUserDTO(user));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

@@ -13,7 +13,13 @@ FROM public.verification_tokens;
 SELECT id, "name", description
 FROM public.categories;
 
-SELECT id, "name", description, price, quantity, seller_id, category_id
+SELECT id, "name", description, seller_id, category_id
 FROM public.products;
+
+SELECT id, "name"
+FROM public.product_variant_labels;
+
+SELECT id, "name", unit_price, quantity, product_id, product_variant_label_id
+FROM public.product_variants;
 
 delete from public.users;
