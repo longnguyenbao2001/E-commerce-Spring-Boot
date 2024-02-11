@@ -16,8 +16,6 @@ import jakarta.validation.constraints.Size;
 public class PutShipAddressRequestDTO {
 
     private Long id;
-    private Long refUserId;
-    private Users currUser;
     @NotNull
     @NotBlank
     @Size(max = 500)
@@ -43,22 +41,6 @@ public class PutShipAddressRequestDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getRefUserId() {
-        return refUserId;
-    }
-
-    public void setRefUserId(Long refUserId) {
-        this.refUserId = refUserId;
-    }
-
-    public Users getCurrUser() {
-        return currUser;
-    }
-
-    public void setCurrUser(Users currUser) {
-        this.currUser = currUser;
     }
 
     public String getAddressLine1() {

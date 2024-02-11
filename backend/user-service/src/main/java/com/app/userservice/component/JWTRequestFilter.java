@@ -51,7 +51,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             try {
                 String username = jwtService.getUsername(token);
 
-                Optional<Users> opUser = userService.findByUsername(username);
+                Optional<Users> opUser = userService.getUserByUsername(username);
                 if (opUser.isPresent()) {
                     Users user = opUser.get();
                     Roles role = user.getRoles();

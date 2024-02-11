@@ -19,13 +19,13 @@ import java.util.List;
  */
 public interface ShipAddressService {
 
-    public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO)
-            throws UserNotExistedException, UserHasNoPermissionException;
-
-    public List<ShipAddressDTO> getShipAddress(Long userId)
+    public List<ShipAddressDTO> getShipAddressByUser(Users user)
             throws UserNotExistedException;
 
-    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO)
+    public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO, Long refUserId)
+            throws UserNotExistedException, UserHasNoPermissionException;
+
+    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, Users currUser, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException;
 
     public void deleteShipAddress(Long addressId, Users currUser, Long refUserId)

@@ -14,6 +14,7 @@ import com.app.userservice.exception.UserNotExistedException;
  */
 public interface UserPermissionService {
 
-    public boolean isPermittedToPerformAction(Users user, Long refUserId)
-            throws UserHasNoPermissionException;
+    public boolean isOwner(Users user, Long refUserId);
+
+    public boolean isAdmin(Users user);
 }

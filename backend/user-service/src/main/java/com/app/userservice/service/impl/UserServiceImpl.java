@@ -80,14 +80,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Users> findByUsername(String username) {
+    public Optional<Users> getUserByUsername(String username) {
         Optional<Users> result = userRepository.findByUsername(username);
 
         return result;
     }
 
     @Override
-    public Optional<Users> findByUserId(Long userId) throws UserNotExistedException {
+    public Optional<Users> getUserByUserId(Long userId) throws UserNotExistedException {
         Optional<Users> res = userRepository.findById(userId);
         if (!res.isPresent()) {
             throw new UserNotExistedException();
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
             throws UserAlreadyExistsException, EmailFailureException {
-        Optional<Users> existingUser = findByUsername(signUpUserRequestDTO.getUsername());
+        Optional<Users> existingUser = this.getUserByUsername(signUpUserRequestDTO.getUsername());
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException();
         }
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(signUpUserRequestDTO.getLastName());
         user.setPassword(encryptionService.encryptPassword(signUpUserRequestDTO.getPassword()));
 
-        Roles role = roleService.findByName(env.getProperty("role.user")).get(0);
+        Roles role = roleService.getRoleByName(env.getProperty("role.user")).get(0);
         if (role != null) {
             user.setRoles(role);
         }
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
             throws UserNotVerifiedException, EmailFailureException, UserNotExistedException {
-        Optional<Users> existingUser = findByUsername(signInUserRequestDTO.getUsername());
+        Optional<Users> existingUser = this.getUserByUsername(signInUserRequestDTO.getUsername());
         if (!existingUser.isPresent()) {
             throw new UserNotExistedException();
         }

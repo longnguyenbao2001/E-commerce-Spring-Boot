@@ -7,7 +7,6 @@ package com.app.userservice.controller;
 import com.app.userservice.dto.CreateShipAddressRequestDTO;
 import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
-import com.app.userservice.entity.ShipAddresses;
 import com.app.userservice.entity.Users;
 import com.app.userservice.exception.DataNotFoundException;
 import com.app.userservice.exception.UserHasNoPermissionException;
@@ -15,8 +14,6 @@ import com.app.userservice.exception.UserNotExistedException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.ShipAddressService;
-import com.app.userservice.service.UserPermissionService;
-import com.app.userservice.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author user
  */
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/addresses")
+public class ShipAddressController {
 
     @Autowired
     private ShipAddressService shipAddressService;
-
-    @Autowired
-    private UserPermissionService userPermissionService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private HttpErrorResponseHandler httpErrorResponseHandler;
@@ -59,9 +50,21 @@ public class UserController {
     @Autowired
     private Environment env;
 
-    @PostMapping("/{userId}/addresses")
+    @GetMapping("/get")
+    public ResponseEntity<?> getShipAddress(@AuthenticationPrincipal Users user) {
+        try {
+            List<ShipAddressDTO> shipAddresses = shipAddressService.getShipAddressByUser(user);
+
+            return httpResponseHandler.handleAcceptedRequest(shipAddresses);
+        } catch (UserNotExistedException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<?> createShipAddress(@AuthenticationPrincipal Users user,
-            @PathVariable Long userId,
             @Valid @RequestBody CreateShipAddressRequestDTO createShipAddressRequestDTO,
             BindingResult bindingResult) {
         try {
@@ -69,14 +72,9 @@ public class UserController {
                 return httpErrorResponseHandler.handleBadRequest(bindingResult);
             }
 
-            if (userPermissionService.isPermittedToPerformAction(user, userId)) {
-                createShipAddressRequestDTO.setUserId(userId);
-                shipAddressService.createShipAddress(createShipAddressRequestDTO);
+            shipAddressService.createShipAddress(createShipAddressRequestDTO, user.getId());
 
-                return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
-            }
-
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.request.bad"));
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (UserNotExistedException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (UserHasNoPermissionException e) {
@@ -86,29 +84,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{userId}/addresses")
-    public ResponseEntity<?> getShipAddress(@AuthenticationPrincipal Users user,
-            @PathVariable Long userId) {
-        try {
-            if (userPermissionService.isPermittedToPerformAction(user, userId)) {
-                List<ShipAddressDTO> shipAddresses = shipAddressService.getShipAddress(userId);
-
-                return httpResponseHandler.handleAcceptedRequest(shipAddresses);
-            }
-
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.request.bad"));
-        } catch (UserNotExistedException e) {
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
-        } catch (UserHasNoPermissionException e) {
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notPermitted"));
-        } catch (Exception e) {
-            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
-        }
-    }
-
-    @PutMapping("/{userId}/addresses/{addressId}")
+    @PutMapping("/{addressId}")
     public ResponseEntity<?> putShipAddress(@AuthenticationPrincipal Users user,
-            @PathVariable Long userId,
             @PathVariable Long addressId,
             @Valid @RequestBody PutShipAddressRequestDTO putShipAddressRequestDTO,
             BindingResult bindingResult) {
@@ -117,17 +94,11 @@ public class UserController {
                 return httpErrorResponseHandler.handleBadRequest(bindingResult);
             }
 
-            //check current log in user and current ref userid
-            if (userPermissionService.isPermittedToPerformAction(user, userId)) {
-                putShipAddressRequestDTO.setId(addressId);
-                putShipAddressRequestDTO.setCurrUser(user);
-                putShipAddressRequestDTO.setRefUserId(userId);
-                shipAddressService.putShipAddress(putShipAddressRequestDTO);
+            //check current log in user is the owner of ref userid
+            putShipAddressRequestDTO.setId(addressId);
+            shipAddressService.putShipAddress(putShipAddressRequestDTO, user, user.getId());
 
-                return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
-            }
-
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.request.bad"));
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
         } catch (UserNotExistedException e) {
@@ -139,18 +110,13 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{userId}/addresses/{addressId}")
+    @DeleteMapping("/{addressId}")
     public ResponseEntity<?> deleteShipAddress(@AuthenticationPrincipal Users user,
-            @PathVariable Long userId,
             @PathVariable Long addressId) {
         try {
-            if (userPermissionService.isPermittedToPerformAction(user, userId)) {
-                shipAddressService.deleteShipAddress(addressId, user, userId);
+            shipAddressService.deleteShipAddress(addressId, user, user.getId());
 
-                return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
-            }
-
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.request.bad"));
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
         } catch (UserNotExistedException e) {

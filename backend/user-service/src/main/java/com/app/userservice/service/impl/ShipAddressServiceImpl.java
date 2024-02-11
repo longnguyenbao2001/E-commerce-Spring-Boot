@@ -49,24 +49,8 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     }
 
     @Override
-    public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO)
-            throws UserNotExistedException {
-        Optional<Users> existingUser = userService.findByUserId(createShipAddressRequestDTO.getUserId());
-
-        ShipAddresses shipAddresses = new ShipAddresses();
-        shipAddresses.setAddressLine1(createShipAddressRequestDTO.getAddressLine1());
-        shipAddresses.setAddressLine2(createShipAddressRequestDTO.getAddressLine2());
-        shipAddresses.setCity(createShipAddressRequestDTO.getCity());
-        shipAddresses.setCountry(createShipAddressRequestDTO.getCountry());
-        shipAddresses.setPhoneNumber(createShipAddressRequestDTO.getPhoneNumber());
-        shipAddresses.setUsers(existingUser.get());
-
-        shipAddressRepository.save(shipAddresses);
-    }
-
-    @Override
-    public List<ShipAddressDTO> getShipAddress(Long userId) throws UserNotExistedException {
-        Optional<Users> existingUser = userService.findByUserId(userId);
+    public List<ShipAddressDTO> getShipAddressByUser(Users user) throws UserNotExistedException {
+        Optional<Users> existingUser = userService.getUserByUserId(user.getId());
 
         List<ShipAddressDTO> res = new ArrayList<>();
         for (ShipAddresses shipAddresses : shipAddressRepository.findByUsers_Id(existingUser.get().getId())) {
@@ -84,37 +68,62 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     }
 
     @Override
+    public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO, Long refUserId)
+            throws UserNotExistedException {
+        Optional<Users> existingUser = userService.getUserByUserId(refUserId);
+
+        ShipAddresses shipAddresses = new ShipAddresses();
+        shipAddresses.setAddressLine1(createShipAddressRequestDTO.getAddressLine1());
+        shipAddresses.setAddressLine2(createShipAddressRequestDTO.getAddressLine2());
+        shipAddresses.setCity(createShipAddressRequestDTO.getCity());
+        shipAddresses.setCountry(createShipAddressRequestDTO.getCountry());
+        shipAddresses.setPhoneNumber(createShipAddressRequestDTO.getPhoneNumber());
+
+        shipAddresses.setUsers(existingUser.get());
+
+        shipAddressRepository.save(shipAddresses);
+    }
+
+    @Override
     @Transactional
-    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO)
+    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, Users currUser, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
-        Optional<Users> opRefUser = userService.findByUserId(putShipAddressRequestDTO.getRefUserId());
+        Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
+        Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(putShipAddressRequestDTO.getId());
         ShipAddresses shipAddresses = opShipAddresses.get();
 
-        //check current userid and current userid in database
-        if (userPermissionService.isPermittedToPerformAction(putShipAddressRequestDTO.getCurrUser(), shipAddresses.getUsers().getId())) {
-            shipAddresses.setAddressLine1(putShipAddressRequestDTO.getAddressLine1());
-            shipAddresses.setAddressLine2(putShipAddressRequestDTO.getAddressLine2());
-            shipAddresses.setCity(putShipAddressRequestDTO.getCity());
-            shipAddresses.setCountry(putShipAddressRequestDTO.getCountry());
-            shipAddresses.setPhoneNumber(putShipAddressRequestDTO.getPhoneNumber());
-
-            shipAddresses.setUsers(opRefUser.get());
-
-            shipAddressRepository.save(shipAddresses);
+        //check ref userid is the owner of address
+        if (!(userPermissionService.isOwner(refUser, shipAddresses.getUsers().getId())
+                || userPermissionService.isAdmin(currUser))) {
+            throw new UserHasNoPermissionException();
         }
+
+        shipAddresses.setAddressLine1(putShipAddressRequestDTO.getAddressLine1());
+        shipAddresses.setAddressLine2(putShipAddressRequestDTO.getAddressLine2());
+        shipAddresses.setCity(putShipAddressRequestDTO.getCity());
+        shipAddresses.setCountry(putShipAddressRequestDTO.getCountry());
+        shipAddresses.setPhoneNumber(putShipAddressRequestDTO.getPhoneNumber());
+
+        shipAddresses.setUsers(refUser);
+
+        shipAddressRepository.save(shipAddresses);
     }
 
     @Override
     @Transactional
     public void deleteShipAddress(Long addressId, Users currUser, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
-        Optional<Users> opRefUser = userService.findByUserId(refUserId);
+        Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
+        Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(addressId);
         ShipAddresses shipAddresses = opShipAddresses.get();
 
-        if (userPermissionService.isPermittedToPerformAction(currUser, shipAddresses.getUsers().getId())) {
-            shipAddressRepository.delete(shipAddresses);
+        if (!(userPermissionService.isOwner(refUser, shipAddresses.getUsers().getId())
+                || userPermissionService.isAdmin(currUser))) {
+            throw new UserHasNoPermissionException();
         }
+
+        shipAddressRepository.delete(shipAddresses);
     }
 }

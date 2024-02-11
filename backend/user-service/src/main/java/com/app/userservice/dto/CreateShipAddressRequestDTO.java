@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Size;
  */
 public class CreateShipAddressRequestDTO {
 
-    private Long userId;
     @NotNull
     @NotBlank
     @Size(max = 500)
@@ -33,14 +32,6 @@ public class CreateShipAddressRequestDTO {
     @NotBlank
     @Size(max = 10)
     private String phoneNumber;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getAddressLine1() {
         return addressLine1;

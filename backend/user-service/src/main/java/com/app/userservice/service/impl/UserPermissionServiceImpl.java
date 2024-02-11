@@ -22,12 +22,18 @@ public class UserPermissionServiceImpl implements UserPermissionService {
     private Environment env;
 
     @Override
-    public boolean isPermittedToPerformAction(Users user, Long refUserId)
-            throws UserHasNoPermissionException {
-        if (user.getId().equals(refUserId)
-                || (user.getRoles() != null && user.getRoles().getName().equals(env.getProperty("role.admin")))) {
+    public boolean isOwner(Users user, Long refUserId) {
+        if (user.getId().equals(refUserId)) {
             return true;
         }
-        throw new UserHasNoPermissionException();
+        return false;
+    }
+
+    @Override
+    public boolean isAdmin(Users user) {
+        if (user.getRoles() != null && user.getRoles().getName().equals(env.getProperty("role.admin"))) {
+            return true;
+        }
+        return false;
     }
 }
