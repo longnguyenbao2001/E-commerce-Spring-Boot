@@ -4,10 +4,9 @@
  */
 package com.app.userservice.component;
 
-import com.app.userservice.entity.Roles;
-import com.app.userservice.service.JWTService;
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.service.UserService;
-import com.app.userservice.entity.Users;
+import com.app.userservice.exception.UserNotExistedException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,9 +33,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTService jwtService;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -45,31 +40,42 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String tokenHeader = request.getHeader("Authorization");
-        if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
-            String token = tokenHeader.substring(7);
-            try {
-                String username = jwtService.getUsername(token);
+        String accessTokenHeader = request.getHeader("Authorization");
 
-                Optional<Users> opUser = userService.getUserByUsername(username);
-                if (opUser.isPresent()) {
-                    Users user = opUser.get();
-                    Roles role = user.getRoles();
+        try {
+            AuthUserDTO authUserDTO = userService.authenticate(accessTokenHeader);
 
-                    List<GrantedAuthority> authorities;
-                    if (role != null) {
-                        authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
-                    } else {
-                        authorities = Collections.singletonList(new SimpleGrantedAuthority(env.getProperty("role.user")));
-                    }
-
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (JWTDecodeException e) {
+            List<GrantedAuthority> authorities;
+            if (authUserDTO != null) {
+                authorities = Collections.singletonList(new SimpleGrantedAuthority(authUserDTO.getRoleName()));
+            } else {
+                authorities = Collections.singletonList(new SimpleGrantedAuthority(env.getProperty("role.user")));
             }
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authUserDTO, null, authorities);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//                Optional<Users> opUser = userService.getUserByUsername(username);
+//                if (opUser.isPresent()) {
+//                    Users user = opUser.get();
+//                    Roles role = user.getRoles();
+//
+//                    List<GrantedAuthority> authorities;
+//                    if (role != null) {
+//                        authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
+//                    } else {
+//                        authorities = Collections.singletonList(new SimpleGrantedAuthority(env.getProperty("role.user")));
+//                    }
+//
+//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+//                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                    SecurityContextHolder.getContext().setAuthentication(authentication);
+//                }
+        } catch (UserNotExistedException e) {
+        } catch (JWTDecodeException e) {
         }
+
         filterChain.doFilter(request, response);
     }
 }

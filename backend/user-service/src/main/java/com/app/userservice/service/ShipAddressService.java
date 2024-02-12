@@ -4,6 +4,7 @@
  */
 package com.app.userservice.service;
 
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.CreateShipAddressRequestDTO;
 import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
@@ -19,15 +20,15 @@ import java.util.List;
  */
 public interface ShipAddressService {
 
-    public List<ShipAddressDTO> getShipAddressByUser(Users user)
+    public List<ShipAddressDTO> getShipAddressByUser(AuthUserDTO authUserDTO)
             throws UserNotExistedException;
 
     public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO, Long refUserId)
             throws UserNotExistedException, UserHasNoPermissionException;
 
-    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, Users currUser, Long refUserId)
+    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException;
 
-    public void deleteShipAddress(Long addressId, Users currUser, Long refUserId)
+    public void deleteShipAddress(Long addressId, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException;
 }

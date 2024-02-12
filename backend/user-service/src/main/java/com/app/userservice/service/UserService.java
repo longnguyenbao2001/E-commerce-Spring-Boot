@@ -4,6 +4,7 @@
  */
 package com.app.userservice.service;
 
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.dto.ResetPasswordRequestDTO;
 import com.app.userservice.dto.SignInUserRequestDTO;
@@ -43,4 +44,7 @@ public interface UserService {
 
     public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
             throws UserNotExistedException, EmailNotAssosiatedWithUserException;
+
+    public AuthUserDTO authenticate(String accessToken)
+            throws UserNotExistedException;
 }

@@ -5,6 +5,7 @@
 package com.app.userservice.controller;
 
 import com.app.userservice.component.DTOConverter;
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.dto.ResetPasswordRequestDTO;
 import com.app.userservice.dto.SignInUserRequestDTO;
@@ -20,6 +21,7 @@ import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.UserService;
 import jakarta.validation.Valid;
+import java.util.Collections;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -113,10 +116,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getLoggedInUserProfile(@AuthenticationPrincipal Users user) {
+    public ResponseEntity<?> getLoggedInUserProfile(@AuthenticationPrincipal AuthUserDTO authUserDTO) {
 
         try {
-            return httpResponseHandler.handleAcceptedRequest(userConverter.convertUserToUserDTO(user));
+            return httpResponseHandler.handleAcceptedRequest(authUserDTO);
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }
@@ -153,10 +156,23 @@ public class AuthenticationController {
 
             userService.resetPassword(resetPasswordRequestDTO);
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.password.reset.success"));
-        } catch (UserNotExistedException ex) {
+        } catch (UserNotExistedException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
-        } catch (EmailNotAssosiatedWithUserException ex) {
+        } catch (EmailNotAssosiatedWithUserException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.email.notAssociated"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestHeader("Authorization") String accessToken) {
+        try {
+            AuthUserDTO authUserDTO = userService.authenticate(accessToken);
+
+            return httpResponseHandler.handleAcceptedRequest(authUserDTO);
+        } catch (UserNotExistedException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

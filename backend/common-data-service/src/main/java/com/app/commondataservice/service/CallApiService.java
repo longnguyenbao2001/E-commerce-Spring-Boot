@@ -4,14 +4,14 @@
  */
 package com.app.commondataservice.service;
 
-import com.app.commondataservice.entity.Users;
-import java.util.Optional;
+import com.app.commondataservice.dto.AuthUserDTO;
+import reactor.core.publisher.Mono;
 
 /**
  *
  * @author user
  */
-public interface UserService {
+public interface CallApiService {
 
-    public Optional<Users> getUserByUsername(String username);
+    public AuthUserDTO authenticate(String accessTokenHeader);
 }

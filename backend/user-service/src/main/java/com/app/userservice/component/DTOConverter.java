@@ -4,6 +4,7 @@
  */
 package com.app.userservice.component;
 
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.UserDTO;
 import com.app.userservice.entity.Users;
 import org.modelmapper.ModelMapper;
@@ -24,5 +25,11 @@ public class DTOConverter {
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
         return userDTO;
+    }
+
+    public AuthUserDTO convertUserToAuthUserDTO(Users user) {
+        AuthUserDTO authUserDTO = modelMapper.map(user, AuthUserDTO.class);
+
+        return authUserDTO;
     }
 }

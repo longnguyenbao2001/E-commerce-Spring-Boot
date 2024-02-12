@@ -35,7 +35,8 @@ public class SecurityConfig {
                                 "/auth/signin",
                                 "/auth/verify",
                                 "/auth/forgot",
-                                "/auth/reset").permitAll()
+                                "/auth/reset",
+                                "/auth/authenticate").permitAll()
                         .requestMatchers("/auth/me").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )

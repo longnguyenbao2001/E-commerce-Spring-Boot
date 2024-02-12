@@ -5,6 +5,7 @@
 package com.app.userservice.service.impl;
 
 import com.app.userservice.dao.ShipAddressRepository;
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.CreateShipAddressRequestDTO;
 import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
@@ -49,8 +50,8 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     }
 
     @Override
-    public List<ShipAddressDTO> getShipAddressByUser(Users user) throws UserNotExistedException {
-        Optional<Users> existingUser = userService.getUserByUserId(user.getId());
+    public List<ShipAddressDTO> getShipAddressByUser(AuthUserDTO authUserDTO) throws UserNotExistedException {
+        Optional<Users> existingUser = userService.getUserByUserId(authUserDTO.getId());
 
         List<ShipAddressDTO> res = new ArrayList<>();
         for (ShipAddresses shipAddresses : shipAddressRepository.findByUsers_Id(existingUser.get().getId())) {
@@ -86,7 +87,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
 
     @Override
     @Transactional
-    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, Users currUser, Long refUserId)
+    public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
         Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
         Users refUser = opRefUser.get();
@@ -94,8 +95,8 @@ public class ShipAddressServiceImpl implements ShipAddressService {
         ShipAddresses shipAddresses = opShipAddresses.get();
 
         //check ref userid is the owner of address
-        if (!(userPermissionService.isOwner(refUser, shipAddresses.getUsers().getId())
-                || userPermissionService.isAdmin(currUser))) {
+        if (!(userPermissionService.isOwner(refUser.getId(), shipAddresses.getUsers().getId())
+                || userPermissionService.isAdmin(authUserDTO))) {
             throw new UserHasNoPermissionException();
         }
 
@@ -112,15 +113,15 @@ public class ShipAddressServiceImpl implements ShipAddressService {
 
     @Override
     @Transactional
-    public void deleteShipAddress(Long addressId, Users currUser, Long refUserId)
+    public void deleteShipAddress(Long addressId, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
         Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
         Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(addressId);
         ShipAddresses shipAddresses = opShipAddresses.get();
 
-        if (!(userPermissionService.isOwner(refUser, shipAddresses.getUsers().getId())
-                || userPermissionService.isAdmin(currUser))) {
+        if (!(userPermissionService.isOwner(refUser.getId(), shipAddresses.getUsers().getId())
+                || userPermissionService.isAdmin(authUserDTO))) {
             throw new UserHasNoPermissionException();
         }
 

@@ -4,6 +4,7 @@
  */
 package com.app.userservice.controller;
 
+import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.CreateShipAddressRequestDTO;
 import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
@@ -51,9 +52,9 @@ public class ShipAddressController {
     private Environment env;
 
     @GetMapping("/get")
-    public ResponseEntity<?> getShipAddress(@AuthenticationPrincipal Users user) {
+    public ResponseEntity<?> getShipAddress(@AuthenticationPrincipal AuthUserDTO authUserDTO) {
         try {
-            List<ShipAddressDTO> shipAddresses = shipAddressService.getShipAddressByUser(user);
+            List<ShipAddressDTO> shipAddresses = shipAddressService.getShipAddressByUser(authUserDTO);
 
             return httpResponseHandler.handleAcceptedRequest(shipAddresses);
         } catch (UserNotExistedException e) {
@@ -64,7 +65,7 @@ public class ShipAddressController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createShipAddress(@AuthenticationPrincipal Users user,
+    public ResponseEntity<?> createShipAddress(@AuthenticationPrincipal AuthUserDTO authUserDTO,
             @Valid @RequestBody CreateShipAddressRequestDTO createShipAddressRequestDTO,
             BindingResult bindingResult) {
         try {
@@ -72,7 +73,7 @@ public class ShipAddressController {
                 return httpErrorResponseHandler.handleBadRequest(bindingResult);
             }
 
-            shipAddressService.createShipAddress(createShipAddressRequestDTO, user.getId());
+            shipAddressService.createShipAddress(createShipAddressRequestDTO, authUserDTO.getId());
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (UserNotExistedException e) {
@@ -85,7 +86,7 @@ public class ShipAddressController {
     }
 
     @PutMapping("/{addressId}")
-    public ResponseEntity<?> putShipAddress(@AuthenticationPrincipal Users user,
+    public ResponseEntity<?> putShipAddress(@AuthenticationPrincipal AuthUserDTO authUserDTO,
             @PathVariable Long addressId,
             @Valid @RequestBody PutShipAddressRequestDTO putShipAddressRequestDTO,
             BindingResult bindingResult) {
@@ -96,7 +97,7 @@ public class ShipAddressController {
 
             //check current log in user is the owner of ref userid
             putShipAddressRequestDTO.setId(addressId);
-            shipAddressService.putShipAddress(putShipAddressRequestDTO, user, user.getId());
+            shipAddressService.putShipAddress(putShipAddressRequestDTO, authUserDTO, authUserDTO.getId());
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
@@ -111,10 +112,10 @@ public class ShipAddressController {
     }
 
     @DeleteMapping("/{addressId}")
-    public ResponseEntity<?> deleteShipAddress(@AuthenticationPrincipal Users user,
+    public ResponseEntity<?> deleteShipAddress(@AuthenticationPrincipal AuthUserDTO authUserDTO,
             @PathVariable Long addressId) {
         try {
-            shipAddressService.deleteShipAddress(addressId, user, user.getId());
+            shipAddressService.deleteShipAddress(addressId, authUserDTO, authUserDTO.getId());
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
