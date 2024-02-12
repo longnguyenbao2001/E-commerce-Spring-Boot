@@ -4,14 +4,12 @@
  */
 package com.app.userservice.controller;
 
-import com.app.userservice.component.DTOConverter;
 import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.ForgotPasswordRequestDTO;
 import com.app.userservice.dto.ResetPasswordRequestDTO;
 import com.app.userservice.dto.SignInUserRequestDTO;
 import com.app.userservice.dto.SignInUserResponseDTO;
 import com.app.userservice.dto.SignUpUserRequestDTO;
-import com.app.userservice.entity.Users;
 import com.app.userservice.exception.EmailFailureException;
 import com.app.userservice.exception.EmailNotAssosiatedWithUserException;
 import com.app.userservice.exception.UserAlreadyExistsException;
@@ -21,7 +19,6 @@ import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.UserService;
 import jakarta.validation.Valid;
-import java.util.Collections;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +51,6 @@ public class AuthenticationController {
 
     @Autowired
     private Environment env;
-
-    @Autowired
-    private DTOConverter userConverter;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpUserRequestDTO signUpUserRequestDTO,

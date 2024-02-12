@@ -8,7 +8,6 @@ import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.dto.CreateShipAddressRequestDTO;
 import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
-import com.app.userservice.entity.Users;
 import com.app.userservice.exception.DataNotFoundException;
 import com.app.userservice.exception.UserHasNoPermissionException;
 import com.app.userservice.exception.UserNotExistedException;

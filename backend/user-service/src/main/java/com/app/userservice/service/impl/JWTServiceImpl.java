@@ -4,7 +4,6 @@
  */
 package com.app.userservice.service.impl;
 
-import com.app.userservice.entity.Roles;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.app.userservice.entity.Users;
@@ -77,9 +76,13 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String getUsername(String token) {
-        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
-        return jwt.getClaim(USERNAME_KEY).asString();
+    public String getUsername(String token) throws Exception {
+        try {
+            DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+            return jwt.getClaim(USERNAME_KEY).asString();
+        } catch (Exception e) {
+            throw new Exception();
+        }
     }
 
     @Override

@@ -43,8 +43,8 @@ public interface UserService {
             throws UserNotExistedException, EmailNotAssosiatedWithUserException, EmailFailureException;
 
     public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException;
+            throws UserNotExistedException, EmailNotAssosiatedWithUserException, Exception;
 
     public AuthUserDTO authenticate(String accessToken)
-            throws UserNotExistedException;
+            throws UserNotExistedException, Exception;
 }

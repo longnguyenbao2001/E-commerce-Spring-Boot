@@ -4,7 +4,6 @@
  */
 package com.app.userservice.service;
 
-import com.app.userservice.entity.Roles;
 import com.app.userservice.entity.Users;
 
 /**
@@ -19,7 +18,8 @@ public interface JWTService {
 
     public String generateJWTPasswordResetToken(Users user);
 
-    public String getUsername(String token);
+    public String getUsername(String token)
+            throws Exception;
 
     public String getPasswordResetEmail(String token);
 }

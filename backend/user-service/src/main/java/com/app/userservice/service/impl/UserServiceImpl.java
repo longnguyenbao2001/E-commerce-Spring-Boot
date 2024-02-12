@@ -29,14 +29,11 @@ import com.app.userservice.exception.UserNotExistedException;
 import com.app.userservice.service.EmailService;
 import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 /**
@@ -204,7 +201,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException {
+            throws UserNotExistedException, EmailNotAssosiatedWithUserException, Exception {
         String username = jwtService.getUsername(resetPasswordRequestDTO.getToken());
         String email = jwtService.getPasswordResetEmail(resetPasswordRequestDTO.getToken());
 
@@ -216,7 +213,6 @@ public class UserServiceImpl implements UserService {
         Users user = opUser.get();
         if (!user.getEmail().equals(email)) {
             throw new EmailNotAssosiatedWithUserException();
-
         }
 
         user.setPassword(encryptionService.encryptPassword(resetPasswordRequestDTO.getPassword()));
@@ -224,7 +220,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthUserDTO authenticate(String accessToken) throws UserNotExistedException {
+    public AuthUserDTO authenticate(String accessToken)
+            throws UserNotExistedException, Exception {
         if (accessToken == null) {
             return null;
         }

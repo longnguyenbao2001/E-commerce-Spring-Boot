@@ -5,7 +5,6 @@
 package com.app.userservice.dao;
 
 import com.app.userservice.entity.ShipAddresses;
-import com.app.userservice.entity.Users;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

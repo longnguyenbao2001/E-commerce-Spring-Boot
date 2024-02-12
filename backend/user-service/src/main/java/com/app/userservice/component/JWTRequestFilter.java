@@ -55,25 +55,9 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authUserDTO, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-//                Optional<Users> opUser = userService.getUserByUsername(username);
-//                if (opUser.isPresent()) {
-//                    Users user = opUser.get();
-//                    Roles role = user.getRoles();
-//
-//                    List<GrantedAuthority> authorities;
-//                    if (role != null) {
-//                        authorities = Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
-//                    } else {
-//                        authorities = Collections.singletonList(new SimpleGrantedAuthority(env.getProperty("role.user")));
-//                    }
-//
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-//                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
         } catch (UserNotExistedException e) {
         } catch (JWTDecodeException e) {
+        } catch (Exception e) {
         }
 
         filterChain.doFilter(request, response);

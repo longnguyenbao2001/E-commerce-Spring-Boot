@@ -5,8 +5,6 @@
 package com.app.userservice.service;
 
 import com.app.userservice.dto.AuthUserDTO;
-import com.app.userservice.entity.Users;
-import com.app.userservice.exception.UserHasNoPermissionException;
 import com.app.userservice.exception.UserNotExistedException;
 
 /**
@@ -17,5 +15,6 @@ public interface UserPermissionService {
 
     public boolean isOwner(Long authUserId, Long refUserId);
 
-    public boolean isAdmin(AuthUserDTO authUserDTO);
+    public boolean isAdmin(AuthUserDTO authUserDTO)
+            throws UserNotExistedException;
 }

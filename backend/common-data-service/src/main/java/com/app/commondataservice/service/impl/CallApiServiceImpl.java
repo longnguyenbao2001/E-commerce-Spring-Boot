@@ -7,8 +7,10 @@ package com.app.commondataservice.service.impl;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.service.CallApiService;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import exception.UserNotExistedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,17 +34,26 @@ public class CallApiServiceImpl implements CallApiService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private Environment env;
+
     @Override
-    public AuthUserDTO authenticate(String accessTokenHeader) {
+    public AuthUserDTO authenticate(String accessTokenHeader) throws UserNotExistedException {
+        try {
+            Mono<AuthUserDTO> monoAuthUser = webClientBuilder.baseUrl(env.getProperty("api.userservice.url"))
+                    .defaultHeader(HttpHeaders.AUTHORIZATION, accessTokenHeader)
+                    .build()
+                    .get()
+                    .uri(env.getProperty("api.userservice.endpoint.authentication"))
+                    .retrieve()
+                    .bodyToMono(AuthUserDTO.class);
 
-        Mono<AuthUserDTO> result = webClientBuilder.baseUrl("http://localhost:8080/auth")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, accessTokenHeader)
-                .build()
-                .get()
-                .uri("/authenticate")
-                .retrieve()
-                .bodyToMono(AuthUserDTO.class);
+            AuthUserDTO authUser = monoAuthUser.block();
 
-        return result.block();
+            return authUser;
+        } catch (Exception e) {
+            throw new UserNotExistedException();
+        }
+
     }
 }

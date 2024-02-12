@@ -5,7 +5,11 @@
 package com.app.userservice.service.impl;
 
 import com.app.userservice.dto.AuthUserDTO;
+import com.app.userservice.entity.Users;
+import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.service.UserService;
 import com.app.userservice.service.UserPermissionService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserPermissionServiceImpl implements UserPermissionService {
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private Environment env;
@@ -29,10 +36,15 @@ public class UserPermissionServiceImpl implements UserPermissionService {
     }
 
     @Override
-    public boolean isAdmin(AuthUserDTO authUserDTO) {
-        if (authUserDTO.getRoleName().equals(env.getProperty("role.admin"))) {
-            return true;
+    public boolean isAdmin(AuthUserDTO authUserDTO) throws UserNotExistedException {
+        Optional<Users> opUser = userService.getUserByUserId(authUserDTO.getId());
+
+        Users user = opUser.get();
+        if (!(authUserDTO.getRoleName().equals(env.getProperty("role.admin")))
+                && user.getRoles().getName().equals(authUserDTO.getRoleName())) {
+            return false;
         }
-        return false;
+
+        return true;
     }
 }

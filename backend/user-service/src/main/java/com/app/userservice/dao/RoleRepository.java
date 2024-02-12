@@ -6,7 +6,6 @@ package com.app.userservice.dao;
 
 import com.app.userservice.entity.Roles;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

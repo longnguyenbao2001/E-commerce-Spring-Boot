@@ -43,6 +43,13 @@ public class HttpErrorResponseHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    public ResponseEntity<?> handleUnauthorizedRequest(String errMessage) {
+        Map<String, String> response = new HashMap<>();
+        response.put(env.getProperty("mes.message"), errMessage);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
     public ResponseEntity<?> handleInternalServerError(String errMessage) {
         Map<String, String> response = new HashMap<>();
         response.put(env.getProperty("mes.message"), errMessage);
