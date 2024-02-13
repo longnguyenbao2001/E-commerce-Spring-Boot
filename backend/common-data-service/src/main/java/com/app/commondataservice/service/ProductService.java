@@ -5,8 +5,10 @@
 package com.app.commondataservice.service;
 
 import com.app.commondataservice.dto.ProductDTO;
+import com.app.commondataservice.dto.ProductDetailDTO;
 import java.util.List;
 import com.app.commondataservice.entity.Products;
+import com.app.commondataservice.exception.DataNotFoundException;
 
 /**
  *
@@ -14,5 +16,8 @@ import com.app.commondataservice.entity.Products;
  */
 public interface ProductService {
 
-    public List<ProductDTO> getProducts(String keyword);
+    public List<ProductDTO> getListProduct(String keyword);
+
+    public ProductDetailDTO getProductDetail(Long productId)
+            throws DataNotFoundException;
 }

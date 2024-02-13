@@ -4,8 +4,8 @@
  */
 package com.app.commondataservice.dto;
 
-import com.app.commondataservice.entity.ProductVariantLabels;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  *
@@ -13,17 +13,17 @@ import java.math.BigDecimal;
  */
 public class ProductVariantDTO {
 
-    private String name;
+    private int id;
     private BigDecimal unitPrice;
     private int quantity;
-    private ProductVariantLabelDTO label;
+    private List<ProductVariantAttributeValueDTO> listProductVariantAttributeValue;
 
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public BigDecimal getUnitPrice() {
@@ -42,12 +42,12 @@ public class ProductVariantDTO {
         this.quantity = quantity;
     }
 
-    public ProductVariantLabelDTO getLabel() {
-        return label;
+    public List<ProductVariantAttributeValueDTO> getListProductVariantAttributeValue() {
+        return listProductVariantAttributeValue;
     }
 
-    public void setLabel(ProductVariantLabelDTO label) {
-        this.label = label;
+    public void setListProductVariantAttributeValue(List<ProductVariantAttributeValueDTO> listProductVariantAttributeValue) {
+        this.listProductVariantAttributeValue = listProductVariantAttributeValue;
     }
 
 }

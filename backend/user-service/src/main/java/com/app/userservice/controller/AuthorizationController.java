@@ -5,20 +5,16 @@
 package com.app.userservice.controller;
 
 import com.app.userservice.dto.AuthUserDTO;
-import com.app.userservice.dto.SignUpUserRequestDTO;
-import com.app.userservice.exception.EmailFailureException;
-import com.app.userservice.exception.UserAlreadyExistsException;
+import com.app.userservice.exception.UserNotExistedException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.UserPermissionService;
 import com.app.userservice.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +42,7 @@ public class AuthorizationController {
     @Autowired
     private Environment env;
 
-    @PostMapping("/isAdmin")
+    @GetMapping("/isAdmin")
     public ResponseEntity<?> isAdmin(@RequestHeader("Authorization") String accessToken) {
         try {
             AuthUserDTO authUserDTO = userService.authenticate(accessToken);
@@ -57,8 +53,8 @@ public class AuthorizationController {
             }
 
             return httpErrorResponseHandler.handleUnauthorizedRequest(env.getProperty("mes.user.permission.unauthorized"));
-        } catch (UserAlreadyExistsException e) {
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.signup.existed"));
+        } catch (UserNotExistedException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

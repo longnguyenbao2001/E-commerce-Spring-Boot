@@ -4,8 +4,10 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -35,9 +38,6 @@ public class ProductVariants implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
-    @Column(name = "name")
-    private String name;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @Column(name = "unit_price")
@@ -45,11 +45,11 @@ public class ProductVariants implements Serializable {
     @Basic(optional = false)
     @Column(name = "quantity")
     private int quantity;
-    @JoinColumn(name = "product_variant_label_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ProductVariantLabels productVariantLabels;
+    @ManyToMany(mappedBy = "productVariantsList", fetch = FetchType.LAZY)
+    private List<ProductVariantAtrributeValues> productVariantAtrributeValuesList;
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Products products;
 
     public ProductVariants() {
@@ -59,9 +59,8 @@ public class ProductVariants implements Serializable {
         this.id = id;
     }
 
-    public ProductVariants(Long id, String name, BigDecimal unitPrice, int quantity) {
+    public ProductVariants(Long id, BigDecimal unitPrice, int quantity) {
         this.id = id;
-        this.name = name;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
     }
@@ -72,14 +71,6 @@ public class ProductVariants implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public BigDecimal getUnitPrice() {
@@ -98,12 +89,12 @@ public class ProductVariants implements Serializable {
         this.quantity = quantity;
     }
 
-    public ProductVariantLabels getProductVariantLabels() {
-        return productVariantLabels;
+    public List<ProductVariantAtrributeValues> getProductVariantAtrributeValuesList() {
+        return productVariantAtrributeValuesList;
     }
 
-    public void setProductVariantLabels(ProductVariantLabels productVariantLabels) {
-        this.productVariantLabels = productVariantLabels;
+    public void setProductVariantAtrributeValuesList(List<ProductVariantAtrributeValues> productVariantAtrributeValuesList) {
+        this.productVariantAtrributeValuesList = productVariantAtrributeValuesList;
     }
 
     public Products getProducts() {

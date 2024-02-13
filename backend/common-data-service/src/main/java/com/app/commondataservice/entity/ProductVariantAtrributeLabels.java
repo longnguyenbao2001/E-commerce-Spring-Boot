@@ -6,34 +6,28 @@ package com.app.commondataservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 /**
  *
  * @author user
  */
 @Entity
-@Table(name = "orders")
+@Table(name = "product_variant_atrribute_labels")
 @NamedQueries({
-    @NamedQuery(name = "Orders.findAll", query = "SELECT o FROM Orders o")})
-public class Orders implements Serializable {
+    @NamedQuery(name = "ProductVariantAtrributeLabels.findAll", query = "SELECT p FROM ProductVariantAtrributeLabels p")})
+public class ProductVariantAtrributeLabels implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,22 +35,23 @@ public class Orders implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Column(name = "order_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate;
+    @Basic(optional = false)
+    @Column(name = "name")
+    private String name;
+    @OneToMany(mappedBy = "productVariantAtrributeLabels", fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orders", fetch = FetchType.LAZY)
-    private List<OrderDetails> orderDetailsList;
+    private List<ProductVariantAtrributeValues> productVariantAtrributeValuesList;
 
-    public Orders() {
+    public ProductVariantAtrributeLabels() {
     }
 
-    public Orders(Long id) {
+    public ProductVariantAtrributeLabels(Long id) {
         this.id = id;
+    }
+
+    public ProductVariantAtrributeLabels(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -67,28 +62,20 @@ public class Orders implements Serializable {
         this.id = id;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public String getName() {
+        return name;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Users getUsers() {
-        return users;
+    public List<ProductVariantAtrributeValues> getProductVariantAtrributeValuesList() {
+        return productVariantAtrributeValuesList;
     }
 
-    public void setUsers(Users users) {
-        this.users = users;
-    }
-
-    public List<OrderDetails> getOrderDetailsList() {
-        return orderDetailsList;
-    }
-
-    public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
-        this.orderDetailsList = orderDetailsList;
+    public void setProductVariantAtrributeValuesList(List<ProductVariantAtrributeValues> productVariantAtrributeValuesList) {
+        this.productVariantAtrributeValuesList = productVariantAtrributeValuesList;
     }
 
     @Override
@@ -101,10 +88,10 @@ public class Orders implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Orders)) {
+        if (!(object instanceof ProductVariantAtrributeLabels)) {
             return false;
         }
-        Orders other = (Orders) object;
+        ProductVariantAtrributeLabels other = (ProductVariantAtrributeLabels) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -113,7 +100,7 @@ public class Orders implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.Orders[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.ProductVariantAtrributeLabels[ id=" + id + " ]";
     }
 
 }

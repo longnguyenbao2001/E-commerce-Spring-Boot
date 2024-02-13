@@ -4,6 +4,7 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -13,9 +14,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -23,10 +27,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "product_variant_labels")
+@Table(name = "product_variant_atrribute_values")
 @NamedQueries({
-    @NamedQuery(name = "ProductVariantLabels.findAll", query = "SELECT p FROM ProductVariantLabels p")})
-public class ProductVariantLabels implements Serializable {
+    @NamedQuery(name = "ProductVariantAtrributeValues.findAll", query = "SELECT p FROM ProductVariantAtrributeValues p")})
+public class ProductVariantAtrributeValues implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,17 +41,25 @@ public class ProductVariantLabels implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "productVariantLabels", fetch = FetchType.LAZY)
+    @JoinTable(name = "product_variants_product_variant_atrribute_values", joinColumns = {
+        @JoinColumn(name = "product_variant_atrribute_value_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "product_variant_id", referencedColumnName = "id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ProductVariants> productVariantsList;
+    @JoinColumn(name = "product_variant_atrribute_label_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private ProductVariantAtrributeLabels productVariantAtrributeLabels;
 
-    public ProductVariantLabels() {
+    public ProductVariantAtrributeValues() {
     }
 
-    public ProductVariantLabels(Long id) {
+    public ProductVariantAtrributeValues(Long id) {
         this.id = id;
     }
 
-    public ProductVariantLabels(Long id, String name) {
+    public ProductVariantAtrributeValues(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -76,6 +88,14 @@ public class ProductVariantLabels implements Serializable {
         this.productVariantsList = productVariantsList;
     }
 
+    public ProductVariantAtrributeLabels getProductVariantAtrributeLabels() {
+        return productVariantAtrributeLabels;
+    }
+
+    public void setProductVariantAtrributeLabels(ProductVariantAtrributeLabels productVariantAtrributeLabels) {
+        this.productVariantAtrributeLabels = productVariantAtrributeLabels;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -86,10 +106,10 @@ public class ProductVariantLabels implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductVariantLabels)) {
+        if (!(object instanceof ProductVariantAtrributeValues)) {
             return false;
         }
-        ProductVariantLabels other = (ProductVariantLabels) object;
+        ProductVariantAtrributeValues other = (ProductVariantAtrributeValues) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -98,7 +118,7 @@ public class ProductVariantLabels implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.ProductVariantLabels[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.ProductVariantAtrributeValues[ id=" + id + " ]";
     }
 
 }

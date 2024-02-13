@@ -1,5 +1,3 @@
-CREATE DATABASE ecommerce;
-
 CREATE TABLE roles (
 	id BIGSERIAL PRIMARY KEY,
 	name VARCHAR(50) NOT NULL UNIQUE
@@ -53,22 +51,33 @@ create table products (
 	foreign key(category_id) references categories(id) on delete set null
 );
 
-create table product_variant_labels (
+create table product_variants (
+	id BIGSERIAL primary key,
+	product_id BIGINT,
+	unit_price DECIMAL(10, 2) not null,
+	quantity INT not null,
+	foreign key(product_id) references products(id) on delete cascade
+);
+
+create table product_variant_atrribute_labels (
 	id BIGSERIAL primary key,
 	name VARCHAR(255) not null unique
 );
 
-create table product_variants (
+create table product_variant_atrribute_values (
 	id BIGSERIAL primary key,
 	name VARCHAR(255) not null, 
-	unit_price DECIMAL(10, 2) not null,
-	quantity INT not null,
-	product_id BIGINT,
-	product_variant_label_id BIGINT,
-	foreign key(product_id) references products(id) on delete cascade,
-	foreign key(product_variant_label_id) references product_variant_labels(id) on delete cascade
+	product_variant_atrribute_label_id BIGINT,
+	foreign key(product_variant_atrribute_label_id) references product_variant_atrribute_labels(id) on delete cascade
 );
 
+create table product_variants_product_variant_atrribute_values (
+	product_variant_id BIGINT,
+	product_variant_atrribute_value_id BIGINT,
+	primary key(product_variant_id, product_variant_atrribute_value_id),
+	foreign key(product_variant_id) references product_variants(id) on delete cascade,
+	foreign key(product_variant_atrribute_value_id) references product_variant_atrribute_values(id) on delete cascade
+);
 
 CREATE TABLE orders (
 	id BIGSERIAL PRIMARY KEY,
@@ -89,14 +98,14 @@ CREATE TABLE order_details (
 INSERT INTO roles (name)
 VALUES ('USER'), ('ADMIN');
 
-INSERT INTO users (username, email, first_name, last_name, password, role_id)
+INSERT INTO users (username, email, first_name, last_name, password, role_id, email_verified)
 VALUES 
-('username1', 'username1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1), 
-('username2', 'username2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
-('username3', 'username3@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
-('username4', 'username4@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
-('user1', 'user1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1),
-('user2', 'user2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1);
+('username1', 'username1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true), 
+('username2', 'username2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true),
+('username3', 'username3@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true),
+('username4', 'username4@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true),
+('user1', 'user1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true),
+('user2', 'user2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true);
 
 INSERT INTO categories (name, description)
 VALUES 
@@ -117,17 +126,29 @@ VALUES
 ('product 9', 'product description 9', 1, 1),
 ('product 10', 'product description 10', 1, 1);
 
-INSERT INTO product_variant_labels (name)
+INSERT INTO product_variant_atrribute_labels (name)
 VALUES 
 ('COLOR'), 
 ('SIZE'),
 ('MEMORY');
 
-INSERT INTO product_variants (name, unit_price, quantity, product_id, product_variant_label_id)
+INSERT INTO product_variant_atrribute_values (name, product_variant_atrribute_label_id)
 VALUES 
-('BLUE', 3000000, 10, 1, 1), 
-('BLACK', 3000000, 10, 1, 1),
-('YELLOW', 3000000, 10, 1, 1);
+('BLUE', 1), ('BLACK', 1), ('YELLOW', 1), --variant for color
+('SMALL', 2), ('MEDIUM', 2), ('LARGE', 2), --variant for size
+('2GB', 3), ('3GB', 3), ('6GB', 3); --variant for memory
+
+INSERT INTO product_variants (unit_price, quantity, product_id)
+VALUES 
+(300000, 10, 1), --create combined variant price and quantity for blue, 2gb, small  variant
+(320000, 10, 1), --create combined variant price and quantity for black, 3gb, medium  variant
+(280000, 10, 1); --create combined variant price and quantity for yellow, 6gb, large  variant
+
+INSERT INTO product_variants_product_variant_atrribute_values (product_variant_id, product_variant_atrribute_value_id)
+VALUES 
+(1, 1), (1, 4), (1, 7), --create variant blue, 2gb, small  variant
+(2, 2), (2, 5), (2, 8), --create variant black, 3gb, medium  variant
+(3, 3), (3, 6), (3, 9); --create variant yellow, 6gb, large  variant
 
 INSERT INTO orders (customer_id)
 VALUES (1);

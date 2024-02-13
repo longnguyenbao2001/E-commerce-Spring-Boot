@@ -8,9 +8,19 @@ package com.app.commondataservice.dto;
  *
  * @author user
  */
-public class ProductVariantLabelDTO {
+public class ProductVariantAttributeValueDTO {
 
+    private int id;
     private String name;
+    private String variantLabel;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -18,6 +28,14 @@ public class ProductVariantLabelDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVariantLabel() {
+        return variantLabel;
+    }
+
+    public void setVariantLabel(String variantLabel) {
+        this.variantLabel = variantLabel;
     }
 
 }

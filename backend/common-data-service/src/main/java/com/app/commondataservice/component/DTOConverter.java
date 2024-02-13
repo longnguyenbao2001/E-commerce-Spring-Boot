@@ -5,10 +5,11 @@
 package com.app.commondataservice.component;
 
 import com.app.commondataservice.dto.ProductDTO;
+import com.app.commondataservice.dto.ProductDetailDTO;
+import com.app.commondataservice.dto.ProductVariantAttributeValueDTO;
 import com.app.commondataservice.dto.ProductVariantDTO;
-import com.app.commondataservice.dto.ProductVariantLabelDTO;
 import com.app.commondataservice.dto.UserDTO;
-import com.app.commondataservice.entity.ProductVariantLabels;
+import com.app.commondataservice.entity.ProductVariantAtrributeValues;
 import com.app.commondataservice.entity.ProductVariants;
 import com.app.commondataservice.entity.Products;
 import com.app.commondataservice.entity.Users;
@@ -28,34 +29,46 @@ public class DTOConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public UserDTO convertUserToUserDTO(Users user) {
+    public UserDTO convertUserToDTO(Users user) {
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
         return userDTO;
     }
 
-    public ProductVariantLabelDTO convertProductVariantLabelToProductVariantLabelDTO(ProductVariantLabels productVariantLabels) {
-        ProductVariantLabelDTO productVariantLabelDTO = modelMapper.map(productVariantLabels, ProductVariantLabelDTO.class);
+    public ProductVariantAttributeValueDTO convertProductVariantAttributeValueToDTO(ProductVariantAtrributeValues productVariantAtrributeValues) {
+        ProductVariantAttributeValueDTO productVariantAttributeValueDTO = modelMapper.map(productVariantAtrributeValues, ProductVariantAttributeValueDTO.class);
+        productVariantAttributeValueDTO.setVariantLabel(productVariantAtrributeValues.getProductVariantAtrributeLabels().getName());
 
-        return productVariantLabelDTO;
+        return productVariantAttributeValueDTO;
     }
 
-    public ProductVariantDTO convertProductVariantToProductVariantDTO(ProductVariants productVariant) {
+    public ProductVariantDTO convertProductVariantToDTO(ProductVariants productVariant) {
         ProductVariantDTO productVariantDTO = modelMapper.map(productVariant, ProductVariantDTO.class);
-        productVariantDTO.setLabel(this.convertProductVariantLabelToProductVariantLabelDTO(productVariant.getProductVariantLabels()));
+
+        List<ProductVariantAttributeValueDTO> listProductVariantAttributeValue = new ArrayList<>();
+        for (ProductVariantAtrributeValues productVariantAtrributeValues : productVariant.getProductVariantAtrributeValuesList()) {
+            listProductVariantAttributeValue.add(this.convertProductVariantAttributeValueToDTO(productVariantAtrributeValues));
+        }
+        productVariantDTO.setListProductVariantAttributeValue(listProductVariantAttributeValue);
 
         return productVariantDTO;
     }
 
-    public ProductDTO convertProductToProductDTO(Products product) {
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
-        productDTO.setSeller(this.convertUserToUserDTO(product.getUsers()));
+    public ProductDetailDTO convertProductDetailToDTO(Products product) {
+        ProductDetailDTO productDetailDTO = modelMapper.map(product, ProductDetailDTO.class);
+        productDetailDTO.setSeller(this.convertUserToDTO(product.getUsers()));
 
-        List<ProductVariantDTO> variants = new ArrayList<>();
+        List<ProductVariantDTO> listProductVariant = new ArrayList<>();
         for (ProductVariants productVariant : product.getProductVariantsList()) {
-            variants.add(this.convertProductVariantToProductVariantDTO(productVariant));
+            listProductVariant.add(this.convertProductVariantToDTO(productVariant));
         }
-        productDTO.setVariants(variants);
+        productDetailDTO.setListProductVariant(listProductVariant);
+
+        return productDetailDTO;
+    }
+
+    public ProductDTO convertProductToDTO(Products product) {
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
 
         return productDTO;
     }

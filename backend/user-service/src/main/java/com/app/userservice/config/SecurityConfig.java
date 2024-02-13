@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/auth/verify",
                                 "/auth/forgot",
                                 "/auth/reset",
-                                "/auth/authenticate").permitAll()
+                                "/auth/authenticate",
+                                "/permission/isAdmin").permitAll()
                         .requestMatchers("/auth/me").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -45,3 +46,10 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 }
+
+///permission/isAdmin
+//permit add in user service
+//but require authenticated in other service
+//or also require in user service?
+
+//"/auth/authenticate",

@@ -54,10 +54,8 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "email_verified")
     private boolean emailVerified;
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private List<Orders> ordersList;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Roles roles;
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Products> productsList;
@@ -133,14 +131,6 @@ public class Users implements Serializable {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
-    }
-
-    public List<Orders> getOrdersList() {
-        return ordersList;
-    }
-
-    public void setOrdersList(List<Orders> ordersList) {
-        this.ordersList = ordersList;
     }
 
     public Roles getRoles() {

@@ -4,10 +4,10 @@
  */
 package com.app.commondataservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,13 +45,13 @@ public class Products implements Serializable {
     private String description;
     @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
     private List<ProductVariants> productVariantsList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "products", fetch = FetchType.LAZY)
-    private List<OrderDetails> orderDetailsList;
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Categories categories;
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Users users;
 
     public Products() {
@@ -97,14 +97,6 @@ public class Products implements Serializable {
 
     public void setProductVariantsList(List<ProductVariants> productVariantsList) {
         this.productVariantsList = productVariantsList;
-    }
-
-    public List<OrderDetails> getOrderDetailsList() {
-        return orderDetailsList;
-    }
-
-    public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
-        this.orderDetailsList = orderDetailsList;
     }
 
     public Categories getCategories() {

@@ -6,9 +6,11 @@ package com.app.commondataservice.controller;
 
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.ProductDTO;
+import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.service.ProductService;
 import com.app.commondataservice.entity.Products;
 import com.app.commondataservice.entity.Users;
+import com.app.commondataservice.exception.DataNotFoundException;
 import com.app.commondataservice.handler.HttpErrorResponseHandler;
 import com.app.commondataservice.handler.HttpResponseHandler;
 import com.app.commondataservice.service.CallApiService;
@@ -19,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,12 +52,25 @@ public class ProductController {
     private Environment env;
 
     @GetMapping
-    public ResponseEntity<?> getProducts(@RequestParam(
+    public ResponseEntity<?> getListProduct(@RequestParam(
             required = false, defaultValue = "") String keyword) {
         try {
-            List<ProductDTO> res = productService.getProducts(keyword);
+            List<ProductDTO> res = productService.getListProduct(keyword);
 
             return httpResponseHandler.handleAcceptedRequest(res);
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getListProduct(@PathVariable Long productId) {
+        try {
+            ProductDetailDTO res = productService.getProductDetail(productId);
+
+            return httpResponseHandler.handleAcceptedRequest(res);
+        } catch (DataNotFoundException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }
