@@ -4,7 +4,6 @@
  */
 package com.app.commondataservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -24,10 +23,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "product_variant_atrribute_labels")
+@Table(name = "variant_labels")
 @NamedQueries({
-    @NamedQuery(name = "ProductVariantAtrributeLabels.findAll", query = "SELECT p FROM ProductVariantAtrributeLabels p")})
-public class ProductVariantAtrributeLabels implements Serializable {
+    @NamedQuery(name = "VariantLabels.findAll", query = "SELECT v FROM VariantLabels v")})
+public class VariantLabels implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -38,18 +37,17 @@ public class ProductVariantAtrributeLabels implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "productVariantAtrributeLabels", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<ProductVariantAtrributeValues> productVariantAtrributeValuesList;
+    @OneToMany(mappedBy = "variantLabels", fetch = FetchType.LAZY)
+    private List<VariantValues> variantValuesList;
 
-    public ProductVariantAtrributeLabels() {
+    public VariantLabels() {
     }
 
-    public ProductVariantAtrributeLabels(Long id) {
+    public VariantLabels(Long id) {
         this.id = id;
     }
 
-    public ProductVariantAtrributeLabels(Long id, String name) {
+    public VariantLabels(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -70,12 +68,12 @@ public class ProductVariantAtrributeLabels implements Serializable {
         this.name = name;
     }
 
-    public List<ProductVariantAtrributeValues> getProductVariantAtrributeValuesList() {
-        return productVariantAtrributeValuesList;
+    public List<VariantValues> getVariantValuesList() {
+        return variantValuesList;
     }
 
-    public void setProductVariantAtrributeValuesList(List<ProductVariantAtrributeValues> productVariantAtrributeValuesList) {
-        this.productVariantAtrributeValuesList = productVariantAtrributeValuesList;
+    public void setVariantValuesList(List<VariantValues> variantValuesList) {
+        this.variantValuesList = variantValuesList;
     }
 
     @Override
@@ -88,10 +86,10 @@ public class ProductVariantAtrributeLabels implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductVariantAtrributeLabels)) {
+        if (!(object instanceof VariantLabels)) {
             return false;
         }
-        ProductVariantAtrributeLabels other = (ProductVariantAtrributeLabels) object;
+        VariantLabels other = (VariantLabels) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -100,7 +98,7 @@ public class ProductVariantAtrributeLabels implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.ProductVariantAtrributeLabels[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.VariantLabels[ id=" + id + " ]";
     }
 
 }

@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests(authorizeRequests
                         -> authorizeRequests
                         .requestMatchers("/products",
-                                "/products/**").permitAll()
+                                "/products/{productId}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

@@ -51,7 +51,7 @@ create table products (
 	foreign key(category_id) references categories(id) on delete set null
 );
 
-create table product_variants (
+create table variants (
 	id BIGSERIAL primary key,
 	product_id BIGINT,
 	unit_price DECIMAL(10, 2) not null,
@@ -59,24 +59,24 @@ create table product_variants (
 	foreign key(product_id) references products(id) on delete cascade
 );
 
-create table product_variant_atrribute_labels (
+create table variant_labels (
 	id BIGSERIAL primary key,
 	name VARCHAR(255) not null unique
 );
 
-create table product_variant_atrribute_values (
+create table variant_values (
 	id BIGSERIAL primary key,
 	name VARCHAR(255) not null, 
-	product_variant_atrribute_label_id BIGINT,
-	foreign key(product_variant_atrribute_label_id) references product_variant_atrribute_labels(id) on delete cascade
+	variant_label_id BIGINT,
+	foreign key(variant_label_id) references variant_labels(id) on delete cascade
 );
 
-create table product_variants_product_variant_atrribute_values (
-	product_variant_id BIGINT,
-	product_variant_atrribute_value_id BIGINT,
-	primary key(product_variant_id, product_variant_atrribute_value_id),
-	foreign key(product_variant_id) references product_variants(id) on delete cascade,
-	foreign key(product_variant_atrribute_value_id) references product_variant_atrribute_values(id) on delete cascade
+create table variants_variant_values (
+	variant_id BIGINT,
+	variant_value_id BIGINT,
+	primary key(variant_id, variant_value_id),
+	foreign key(variant_id) references variants(id) on delete cascade,
+	foreign key(variant_value_id) references variant_values(id) on delete cascade
 );
 
 CREATE TABLE orders (
@@ -92,7 +92,7 @@ CREATE TABLE order_details (
 	product_id BIGINT,
 	PRIMARY KEY (order_id, product_id),
 	FOREIGN KEY(order_id) REFERENCES orders(id) on delete set null,
-	FOREIGN KEY(product_id) REFERENCES products(id) on delete set null
+	FOREIGN KEY(product_id) REFERENCES products(id) on delete cascade
 );
 
 INSERT INTO roles (name)
@@ -126,25 +126,25 @@ VALUES
 ('product 9', 'product description 9', 1, 1),
 ('product 10', 'product description 10', 1, 1);
 
-INSERT INTO product_variant_atrribute_labels (name)
+INSERT INTO variant_labels (name)
 VALUES 
 ('COLOR'), 
 ('SIZE'),
 ('MEMORY');
 
-INSERT INTO product_variant_atrribute_values (name, product_variant_atrribute_label_id)
+INSERT INTO variant_values (name, variant_label_id)
 VALUES 
 ('BLUE', 1), ('BLACK', 1), ('YELLOW', 1), --variant for color
 ('SMALL', 2), ('MEDIUM', 2), ('LARGE', 2), --variant for size
 ('2GB', 3), ('3GB', 3), ('6GB', 3); --variant for memory
 
-INSERT INTO product_variants (unit_price, quantity, product_id)
+INSERT INTO variants (unit_price, quantity, product_id)
 VALUES 
 (300000, 10, 1), --create combined variant price and quantity for blue, 2gb, small  variant
 (320000, 10, 1), --create combined variant price and quantity for black, 3gb, medium  variant
 (280000, 10, 1); --create combined variant price and quantity for yellow, 6gb, large  variant
 
-INSERT INTO product_variants_product_variant_atrribute_values (product_variant_id, product_variant_atrribute_value_id)
+INSERT INTO variants_variant_values (variant_id, variant_value_id)
 VALUES 
 (1, 1), (1, 4), (1, 7), --create variant blue, 2gb, small  variant
 (2, 2), (2, 5), (2, 8), --create variant black, 3gb, medium  variant

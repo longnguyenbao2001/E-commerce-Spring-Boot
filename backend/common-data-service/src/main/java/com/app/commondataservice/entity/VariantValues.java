@@ -4,7 +4,6 @@
  */
 package com.app.commondataservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -15,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
@@ -27,10 +25,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "product_variant_atrribute_values")
+@Table(name = "variant_values")
 @NamedQueries({
-    @NamedQuery(name = "ProductVariantAtrributeValues.findAll", query = "SELECT p FROM ProductVariantAtrributeValues p")})
-public class ProductVariantAtrributeValues implements Serializable {
+    @NamedQuery(name = "VariantValues.findAll", query = "SELECT v FROM VariantValues v")})
+public class VariantValues implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,25 +39,20 @@ public class ProductVariantAtrributeValues implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @JoinTable(name = "product_variants_product_variant_atrribute_values", joinColumns = {
-        @JoinColumn(name = "product_variant_atrribute_value_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "product_variant_id", referencedColumnName = "id")})
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<ProductVariants> productVariantsList;
-    @JoinColumn(name = "product_variant_atrribute_label_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    private ProductVariantAtrributeLabels productVariantAtrributeLabels;
+    @ManyToMany(mappedBy = "variantValuesList", fetch = FetchType.LAZY)
+    private List<Variants> variantsList;
+    @JoinColumn(name = "variant_label_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private VariantLabels variantLabels;
 
-    public ProductVariantAtrributeValues() {
+    public VariantValues() {
     }
 
-    public ProductVariantAtrributeValues(Long id) {
+    public VariantValues(Long id) {
         this.id = id;
     }
 
-    public ProductVariantAtrributeValues(Long id, String name) {
+    public VariantValues(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -80,20 +73,20 @@ public class ProductVariantAtrributeValues implements Serializable {
         this.name = name;
     }
 
-    public List<ProductVariants> getProductVariantsList() {
-        return productVariantsList;
+    public List<Variants> getVariantsList() {
+        return variantsList;
     }
 
-    public void setProductVariantsList(List<ProductVariants> productVariantsList) {
-        this.productVariantsList = productVariantsList;
+    public void setVariantsList(List<Variants> variantsList) {
+        this.variantsList = variantsList;
     }
 
-    public ProductVariantAtrributeLabels getProductVariantAtrributeLabels() {
-        return productVariantAtrributeLabels;
+    public VariantLabels getVariantLabels() {
+        return variantLabels;
     }
 
-    public void setProductVariantAtrributeLabels(ProductVariantAtrributeLabels productVariantAtrributeLabels) {
-        this.productVariantAtrributeLabels = productVariantAtrributeLabels;
+    public void setVariantLabels(VariantLabels variantLabels) {
+        this.variantLabels = variantLabels;
     }
 
     @Override
@@ -106,10 +99,10 @@ public class ProductVariantAtrributeValues implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductVariantAtrributeValues)) {
+        if (!(object instanceof VariantValues)) {
             return false;
         }
-        ProductVariantAtrributeValues other = (ProductVariantAtrributeValues) object;
+        VariantValues other = (VariantValues) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -118,7 +111,7 @@ public class ProductVariantAtrributeValues implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.ProductVariantAtrributeValues[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.VariantValues[ id=" + id + " ]";
     }
 
 }

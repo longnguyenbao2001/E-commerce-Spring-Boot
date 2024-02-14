@@ -4,18 +4,25 @@
  */
 package com.app.commondataservice.dto;
 
-import java.util.List;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
  * @author user
  */
-public class ProductDetailDTO {
+public class CreateProductRequestDTO {
 
+    @NotNull
+    @NotBlank
     private String name;
+    @NotNull
+    @NotBlank
     private String description;
-    private List<VariantDTO> listVariants;
-    private UserDTO seller;
+    @NotNull
+    @Digits(integer = 15, fraction = 0)
+    private Long categoryId;
 
     public String getName() {
         return name;
@@ -33,20 +40,12 @@ public class ProductDetailDTO {
         this.description = description;
     }
 
-    public List<VariantDTO> getListVariants() {
-        return listVariants;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setListVariants(List<VariantDTO> listVariants) {
-        this.listVariants = listVariants;
-    }
-
-    public UserDTO getSeller() {
-        return seller;
-    }
-
-    public void setSeller(UserDTO seller) {
-        this.seller = seller;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
 }

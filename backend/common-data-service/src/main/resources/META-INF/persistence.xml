@@ -17,6 +17,9 @@
     <class>com.app.commondataservice.entity.ProductVariantLabels</class>
     <class>com.app.commondataservice.entity.ProductVariantAtrributeLabels</class>
     <class>com.app.commondataservice.entity.ProductVariantAtrributeValues</class>
+    <class>com.app.commondataservice.entity.VariantValues</class>
+    <class>com.app.commondataservice.entity.Variants</class>
+    <class>com.app.commondataservice.entity.VariantLabels</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ecommerce"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>

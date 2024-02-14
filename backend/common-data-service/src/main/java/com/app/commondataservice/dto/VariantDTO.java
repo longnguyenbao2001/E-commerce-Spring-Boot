@@ -11,12 +11,12 @@ import java.util.List;
  *
  * @author user
  */
-public class ProductVariantDTO {
+public class VariantDTO {
 
     private int id;
     private BigDecimal unitPrice;
     private int quantity;
-    private List<ProductVariantAttributeValueDTO> listProductVariantAttributeValue;
+    private List<VariantValueDTO> listVariantValues;
 
     public int getId() {
         return id;
@@ -42,12 +42,12 @@ public class ProductVariantDTO {
         this.quantity = quantity;
     }
 
-    public List<ProductVariantAttributeValueDTO> getListProductVariantAttributeValue() {
-        return listProductVariantAttributeValue;
+    public List<VariantValueDTO> getListVariantValues() {
+        return listVariantValues;
     }
 
-    public void setListProductVariantAttributeValue(List<ProductVariantAttributeValueDTO> listProductVariantAttributeValue) {
-        this.listProductVariantAttributeValue = listProductVariantAttributeValue;
+    public void setListVariantValues(List<VariantValueDTO> listVariantValues) {
+        this.listVariantValues = listVariantValues;
     }
 
 }

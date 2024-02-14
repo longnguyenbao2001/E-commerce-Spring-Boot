@@ -4,7 +4,6 @@
  */
 package com.app.commondataservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
@@ -27,10 +27,10 @@ import jakarta.persistence.Table;
  * @author user
  */
 @Entity
-@Table(name = "product_variants")
+@Table(name = "variants")
 @NamedQueries({
-    @NamedQuery(name = "ProductVariants.findAll", query = "SELECT p FROM ProductVariants p")})
-public class ProductVariants implements Serializable {
+    @NamedQuery(name = "Variants.findAll", query = "SELECT v FROM Variants v")})
+public class Variants implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,21 +45,23 @@ public class ProductVariants implements Serializable {
     @Basic(optional = false)
     @Column(name = "quantity")
     private int quantity;
-    @ManyToMany(mappedBy = "productVariantsList", fetch = FetchType.LAZY)
-    private List<ProductVariantAtrributeValues> productVariantAtrributeValuesList;
+    @JoinTable(name = "variants_variant_values", joinColumns = {
+        @JoinColumn(name = "variant_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "variant_value_id", referencedColumnName = "id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<VariantValues> variantValuesList;
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     private Products products;
 
-    public ProductVariants() {
+    public Variants() {
     }
 
-    public ProductVariants(Long id) {
+    public Variants(Long id) {
         this.id = id;
     }
 
-    public ProductVariants(Long id, BigDecimal unitPrice, int quantity) {
+    public Variants(Long id, BigDecimal unitPrice, int quantity) {
         this.id = id;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
@@ -89,12 +91,12 @@ public class ProductVariants implements Serializable {
         this.quantity = quantity;
     }
 
-    public List<ProductVariantAtrributeValues> getProductVariantAtrributeValuesList() {
-        return productVariantAtrributeValuesList;
+    public List<VariantValues> getVariantValuesList() {
+        return variantValuesList;
     }
 
-    public void setProductVariantAtrributeValuesList(List<ProductVariantAtrributeValues> productVariantAtrributeValuesList) {
-        this.productVariantAtrributeValuesList = productVariantAtrributeValuesList;
+    public void setVariantValuesList(List<VariantValues> variantValuesList) {
+        this.variantValuesList = variantValuesList;
     }
 
     public Products getProducts() {
@@ -115,10 +117,10 @@ public class ProductVariants implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProductVariants)) {
+        if (!(object instanceof Variants)) {
             return false;
         }
-        ProductVariants other = (ProductVariants) object;
+        Variants other = (Variants) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -127,7 +129,7 @@ public class ProductVariants implements Serializable {
 
     @Override
     public String toString() {
-        return "com.app.commondataservice.entity.ProductVariants[ id=" + id + " ]";
+        return "com.app.commondataservice.entity.Variants[ id=" + id + " ]";
     }
 
 }

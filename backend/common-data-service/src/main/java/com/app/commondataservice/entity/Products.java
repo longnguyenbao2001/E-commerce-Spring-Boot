@@ -4,7 +4,6 @@
  */
 package com.app.commondataservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 import jakarta.persistence.Basic;
@@ -44,14 +43,12 @@ public class Products implements Serializable {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
-    private List<ProductVariants> productVariantsList;
+    private List<Variants> variantsList;
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     private Categories categories;
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
     public Products() {
@@ -91,12 +88,12 @@ public class Products implements Serializable {
         this.description = description;
     }
 
-    public List<ProductVariants> getProductVariantsList() {
-        return productVariantsList;
+    public List<Variants> getVariantsList() {
+        return variantsList;
     }
 
-    public void setProductVariantsList(List<ProductVariants> productVariantsList) {
-        this.productVariantsList = productVariantsList;
+    public void setVariantsList(List<Variants> variantsList) {
+        this.variantsList = variantsList;
     }
 
     public Categories getCategories() {

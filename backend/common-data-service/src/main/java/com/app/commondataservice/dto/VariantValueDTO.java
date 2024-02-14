@@ -8,7 +8,7 @@ package com.app.commondataservice.dto;
  *
  * @author user
  */
-public class ProductVariantAttributeValueDTO {
+public class VariantValueDTO {
 
     private int id;
     private String name;
