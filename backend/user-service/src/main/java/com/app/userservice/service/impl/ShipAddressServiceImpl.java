@@ -16,7 +16,7 @@ import com.app.userservice.entity.Users;
 import com.app.userservice.entity.ShipAddresses;
 import com.app.userservice.exception.DataNotFoundException;
 import com.app.userservice.exception.UserHasNoPermissionException;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     }
 
     @Override
-    public List<ShipAddressDTO> getShipAddressByUser(AuthUserDTO authUserDTO) throws UserNotExistedException {
+    public List<ShipAddressDTO> getShipAddressByUser(AuthUserDTO authUserDTO) throws UserNotFoundException {
         Optional<Users> existingUser = userService.getUserByUserId(authUserDTO.getId());
 
         List<ShipAddressDTO> res = new ArrayList<>();
@@ -70,7 +70,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
 
     @Override
     public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO, Long refUserId)
-            throws UserNotExistedException {
+            throws UserNotFoundException {
         Optional<Users> existingUser = userService.getUserByUserId(refUserId);
 
         ShipAddresses shipAddresses = new ShipAddresses();
@@ -88,7 +88,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     @Override
     @Transactional
     public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, AuthUserDTO authUserDTO, Long refUserId)
-            throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
+            throws UserNotFoundException, DataNotFoundException, UserHasNoPermissionException {
         Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
         Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(putShipAddressRequestDTO.getId());
@@ -114,7 +114,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     @Override
     @Transactional
     public void deleteShipAddress(Long addressId, AuthUserDTO authUserDTO, Long refUserId)
-            throws UserNotExistedException, DataNotFoundException, UserHasNoPermissionException {
+            throws UserNotFoundException, DataNotFoundException, UserHasNoPermissionException {
         Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
         Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(addressId);

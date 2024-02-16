@@ -5,7 +5,7 @@
 package com.app.userservice.controller;
 
 import com.app.userservice.dto.AuthUserDTO;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.UserPermissionService;
@@ -53,7 +53,7 @@ public class AuthorizationController {
             }
 
             return httpErrorResponseHandler.handleUnauthorizedRequest(env.getProperty("mes.user.permission.unauthorized"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());

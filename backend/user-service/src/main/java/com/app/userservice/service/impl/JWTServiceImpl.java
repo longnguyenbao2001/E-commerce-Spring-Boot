@@ -37,7 +37,8 @@ public class JWTServiceImpl implements JWTService {
     @Value("${jwt.passwordResetToken.expiryTimeInMilliSeconds}")
     private int passwordResetTokenExpiryTime;
     private Algorithm algorithm;
-    private static final String USERNAME_KEY = "USERNAME";
+//    private static final String USERNAME_KEY = "USERNAME";
+    private static final String USERID_KEY = "USERID";
     private static final String VERIFICATION_EMAIL_KEY = "VERIFICATION_EMAIL";
     private static final String PASSWORD_RESET_EMAIL_KEY = "PASSWORD_RESET_EMAIL";
 
@@ -49,7 +50,7 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public String generateJWTAccessToken(Users user) {
         return JWT.create()
-                .withClaim(USERNAME_KEY, user.getUsername())
+                .withClaim(USERID_KEY, user.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessTokenExpiryTime))
                 .withIssuer(issuer)
                 .sign(algorithm);
@@ -68,7 +69,7 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public String generateJWTPasswordResetToken(Users user) {
         return JWT.create()
-                .withClaim(USERNAME_KEY, user.getUsername())
+                .withClaim(USERID_KEY, user.getId())
                 .withClaim(PASSWORD_RESET_EMAIL_KEY, user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + passwordResetTokenExpiryTime))
                 .withIssuer(issuer)
@@ -76,10 +77,10 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String getUsername(String token) throws Exception {
+    public Long getUserId(String token) throws Exception {
         try {
             DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
-            return jwt.getClaim(USERNAME_KEY).asString();
+            return jwt.getClaim(USERID_KEY).asLong();
         } catch (Exception e) {
             throw new Exception();
         }

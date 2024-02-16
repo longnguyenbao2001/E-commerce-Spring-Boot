@@ -5,6 +5,7 @@
 package com.app.commondataservice.dao;
 
 import com.app.commondataservice.entity.Variants;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,4 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface VariantRepository extends JpaRepository<Variants, Long> {
 
+    List<Variants> findByProducts_Id(Long productId);
 }

@@ -13,7 +13,7 @@ import com.app.userservice.dto.SignUpUserRequestDTO;
 import com.app.userservice.exception.EmailFailureException;
 import com.app.userservice.exception.EmailNotAssosiatedWithUserException;
 import com.app.userservice.exception.UserAlreadyExistsException;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.app.userservice.exception.UserNotVerifiedException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
@@ -85,7 +85,7 @@ public class AuthenticationController {
             }
 
             return httpResponseHandler.handleAcceptedRequest(res);
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (UserNotVerifiedException e) {
             return httpErrorResponseHandler.handleForbiddenRequest(env.getProperty("mes.signin.notVerified"));
@@ -129,7 +129,7 @@ public class AuthenticationController {
 
             userService.forgotPassword(forgotPasswordRequestDTO);
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.password.forgot.success"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (EmailNotAssosiatedWithUserException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.email.notAssociated"));
@@ -150,7 +150,7 @@ public class AuthenticationController {
 
             userService.resetPassword(resetPasswordRequestDTO);
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.password.reset.success"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (EmailNotAssosiatedWithUserException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.email.notAssociated"));
@@ -165,7 +165,7 @@ public class AuthenticationController {
             AuthUserDTO authUserDTO = userService.authenticate(accessToken);
 
             return httpResponseHandler.handleAcceptedRequest(authUserDTO);
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());

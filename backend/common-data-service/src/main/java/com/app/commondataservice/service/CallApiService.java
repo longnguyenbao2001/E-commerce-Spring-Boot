@@ -5,8 +5,7 @@
 package com.app.commondataservice.service;
 
 import com.app.commondataservice.dto.AuthUserDTO;
-import exception.UserNotExistedException;
-import reactor.core.publisher.Mono;
+import com.app.commondataservice.exception.UserNotFoundException;
 
 /**
  *
@@ -15,5 +14,5 @@ import reactor.core.publisher.Mono;
 public interface CallApiService {
 
     public AuthUserDTO authenticate(String accessTokenHeader)
-            throws UserNotExistedException;
+            throws UserNotFoundException;
 }

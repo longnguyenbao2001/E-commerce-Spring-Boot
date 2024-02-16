@@ -7,7 +7,7 @@ package com.app.commondataservice.component;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.service.CallApiService;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import exception.UserNotExistedException;
+import com.app.commondataservice.exception.UserNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (JWTDecodeException e) {
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
         } catch (Exception e) {
         }
 

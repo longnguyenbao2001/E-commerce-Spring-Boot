@@ -10,7 +10,7 @@ import com.app.userservice.dto.PutShipAddressRequestDTO;
 import com.app.userservice.dto.ShipAddressDTO;
 import com.app.userservice.exception.DataNotFoundException;
 import com.app.userservice.exception.UserHasNoPermissionException;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.app.userservice.handler.HttpErrorResponseHandler;
 import com.app.userservice.handler.HttpResponseHandler;
 import com.app.userservice.service.ShipAddressService;
@@ -56,7 +56,7 @@ public class ShipAddressController {
             List<ShipAddressDTO> shipAddresses = shipAddressService.getShipAddressByUser(authUserDTO);
 
             return httpResponseHandler.handleAcceptedRequest(shipAddresses);
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
@@ -75,7 +75,7 @@ public class ShipAddressController {
             shipAddressService.createShipAddress(createShipAddressRequestDTO, authUserDTO.getId());
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (UserHasNoPermissionException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notPermitted"));
@@ -101,7 +101,7 @@ public class ShipAddressController {
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (UserHasNoPermissionException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notPermitted"));
@@ -119,7 +119,7 @@ public class ShipAddressController {
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
         } catch (UserHasNoPermissionException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notPermitted"));

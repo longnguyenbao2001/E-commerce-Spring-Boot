@@ -6,7 +6,7 @@ package com.app.userservice.component;
 
 import com.app.userservice.dto.AuthUserDTO;
 import com.app.userservice.service.UserService;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -55,7 +55,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authUserDTO, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (UserNotExistedException e) {
+        } catch (UserNotFoundException e) {
         } catch (JWTDecodeException e) {
         } catch (Exception e) {
         }

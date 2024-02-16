@@ -15,7 +15,7 @@ import com.app.userservice.entity.Users;
 import com.app.userservice.exception.EmailFailureException;
 import com.app.userservice.exception.EmailNotAssosiatedWithUserException;
 import com.app.userservice.exception.UserAlreadyExistsException;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.app.userservice.exception.UserNotVerifiedException;
 import java.util.Optional;
 
@@ -28,23 +28,23 @@ public interface UserService {
     public Optional<Users> getUserByUsername(String username);
 
     public Optional<Users> getUserByUserId(Long userId)
-            throws UserNotExistedException;
+            throws UserNotFoundException;
 
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
             throws UserAlreadyExistsException, EmailFailureException;
 
     public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
-            throws UserNotVerifiedException, EmailFailureException, UserNotExistedException;
+            throws UserNotVerifiedException, EmailFailureException, UserNotFoundException;
 
     public boolean verifyUser(String token)
-            throws UserNotExistedException;
+            throws UserNotFoundException;
 
     public void forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException, EmailFailureException;
+            throws UserNotFoundException, EmailNotAssosiatedWithUserException, EmailFailureException;
 
     public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException, Exception;
+            throws UserNotFoundException, EmailNotAssosiatedWithUserException, Exception;
 
     public AuthUserDTO authenticate(String accessToken)
-            throws UserNotExistedException, Exception;
+            throws UserNotFoundException, Exception;
 }

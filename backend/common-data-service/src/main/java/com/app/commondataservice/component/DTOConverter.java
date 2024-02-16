@@ -56,13 +56,6 @@ public class DTOConverter {
 
     public ProductDetailDTO convertProductDetailToDTO(Products product) {
         ProductDetailDTO productDetailDTO = modelMapper.map(product, ProductDetailDTO.class);
-        productDetailDTO.setSeller(this.convertUserToDTO(product.getUsers()));
-
-        List<VariantDTO> listVariantDTO = new ArrayList<>();
-        for (Variants variant : product.getVariantsList()) {
-            listVariantDTO.add(this.convertVariantToDTO(variant));
-        }
-        productDetailDTO.setListVariants(listVariantDTO);
 
         return productDetailDTO;
     }

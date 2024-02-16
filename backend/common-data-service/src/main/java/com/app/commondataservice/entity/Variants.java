@@ -53,6 +53,8 @@ public class Variants implements Serializable {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Products products;
+    @Column(name = "product_id", updatable = false, insertable = false)
+    private Long productId;
 
     public Variants() {
     }
@@ -65,6 +67,14 @@ public class Variants implements Serializable {
         this.id = id;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public Long getId() {

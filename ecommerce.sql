@@ -90,9 +90,11 @@ CREATE TABLE order_details (
 	quantity INT NOT NULL,
 	order_id BIGINT,
 	product_id BIGINT,
-	PRIMARY KEY (order_id, product_id),
+	variant_id BIGINT,
+	PRIMARY KEY (order_id, product_id, variant_id),
 	FOREIGN KEY(order_id) REFERENCES orders(id) on delete set null,
-	FOREIGN KEY(product_id) REFERENCES products(id) on delete cascade
+	FOREIGN KEY(product_id) REFERENCES products(id) on delete cascade,
+	FOREIGN KEY(variant_id) REFERENCES variants(id) on delete cascade
 );
 
 INSERT INTO roles (name)
@@ -153,8 +155,8 @@ VALUES
 INSERT INTO orders (customer_id)
 VALUES (1);
 
-INSERT INTO order_details (order_id, product_id, quantity)
+INSERT INTO order_details (order_id, product_id, variant_id, quantity)
 VALUES 
-(1, 1, 10), 
-(1, 2, 5),
-(1, 3, 7);
+(1, 1, 1, 10), 
+(1, 1, 2, 5),
+(1, 1, 3, 7);

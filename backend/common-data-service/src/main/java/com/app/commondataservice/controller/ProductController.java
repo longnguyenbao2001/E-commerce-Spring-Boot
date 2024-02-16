@@ -10,12 +10,13 @@ import com.app.commondataservice.dto.CreateVariantRequestDTO;
 import com.app.commondataservice.dto.ProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
+import com.app.commondataservice.dto.PutVariantRequestDTO;
+import com.app.commondataservice.dto.VariantDTO;
 import com.app.commondataservice.service.ProductService;
 import com.app.commondataservice.exception.DataNotFoundException;
 import com.app.commondataservice.handler.HttpErrorResponseHandler;
 import com.app.commondataservice.handler.HttpResponseHandler;
-import com.app.commondataservice.service.CallApiService;
-import exception.UserNotExistedException;
+import com.app.commondataservice.service.VariantService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +46,7 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    private CallApiService callApiService;
+    private VariantService variantService;
 
     @Autowired
     private HttpErrorResponseHandler httpErrorResponseHandler;
@@ -99,23 +99,6 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/variants/create")
-    public ResponseEntity<?> createProductVariants(@AuthenticationPrincipal AuthUserDTO authUserDTO,
-            @Valid @RequestBody CreateVariantRequestDTO createProductVariantRequestDTO,
-            BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return httpErrorResponseHandler.handleBadRequest(bindingResult);
-            }
-
-            productService.createVariant(createProductVariantRequestDTO, authUserDTO.getId());
-
-            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
-        } catch (Exception e) {
-            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
-        }
-    }
-
     @PutMapping("/{productId}")
     public ResponseEntity<?> putProduct(@PathVariable Long productId,
             @AuthenticationPrincipal AuthUserDTO authUserDTO,
@@ -130,6 +113,8 @@ public class ProductController {
             productService.putProduct(putProductRequestDTO, authUserDTO, authUserDTO.getId());
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
+        } catch (DataNotFoundException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }
@@ -147,14 +132,64 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(@RequestHeader("Authorization") String token) {
+    @GetMapping("/{productId}/variants")
+    public ResponseEntity<?> getProductVariants(@PathVariable Long productId) {
         try {
-            AuthUserDTO res = callApiService.authenticate(token);
+            List<VariantDTO> res = variantService.getVariantsByProductId(productId);
 
             return httpResponseHandler.handleAcceptedRequest(res);
-        } catch (UserNotExistedException e) {
-            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.user.notExisted"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{productId}/variants/create")
+    public ResponseEntity<?> createProductVariants(@AuthenticationPrincipal AuthUserDTO authUserDTO,
+            @PathVariable Long productId,
+            @Valid @RequestBody CreateVariantRequestDTO createProductVariantRequestDTO,
+            BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return httpErrorResponseHandler.handleBadRequest(bindingResult);
+            }
+
+            variantService.createVariant(productId, createProductVariantRequestDTO, authUserDTO.getId());
+
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{productId}/variants/{variantId}")
+    public ResponseEntity<?> putProductVariant(@AuthenticationPrincipal AuthUserDTO authUserDTO,
+            @PathVariable Long productId,
+            @Valid @RequestBody PutVariantRequestDTO putVariantRequestDTO,
+            BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return httpErrorResponseHandler.handleBadRequest(bindingResult);
+            }
+
+            variantService.putVariant(productId, putVariantRequestDTO, authUserDTO, authUserDTO.getId());
+
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
+        } catch (DataNotFoundException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/variants/{variantId}")
+    public ResponseEntity<?> deleteProductVariant(@AuthenticationPrincipal AuthUserDTO authUserDTO,
+            @PathVariable Long variantId) {
+        try {
+            variantService.deleteVariant(variantId, authUserDTO, authUserDTO.getId());
+
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
+        } catch (DataNotFoundException e) {
+            return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

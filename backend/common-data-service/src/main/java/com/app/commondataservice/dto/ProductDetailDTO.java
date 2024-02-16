@@ -4,8 +4,6 @@
  */
 package com.app.commondataservice.dto;
 
-import java.util.List;
-
 /**
  *
  * @author user
@@ -14,8 +12,7 @@ public class ProductDetailDTO {
 
     private String name;
     private String description;
-    private List<VariantDTO> listVariants;
-    private UserDTO seller;
+    private Long sellerId;
 
     public String getName() {
         return name;
@@ -33,20 +30,12 @@ public class ProductDetailDTO {
         this.description = description;
     }
 
-    public List<VariantDTO> getListVariants() {
-        return listVariants;
+    public Long getSellerId() {
+        return sellerId;
     }
 
-    public void setListVariants(List<VariantDTO> listVariants) {
-        this.listVariants = listVariants;
-    }
-
-    public UserDTO getSeller() {
-        return seller;
-    }
-
-    public void setSeller(UserDTO seller) {
-        this.seller = seller;
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
 }

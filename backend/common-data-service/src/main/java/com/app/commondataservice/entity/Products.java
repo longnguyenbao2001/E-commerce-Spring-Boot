@@ -50,6 +50,8 @@ public class Products implements Serializable {
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
+    @Column(name = "seller_id", updatable = false, insertable = false)
+    private Long sellerId;
 
     public Products() {
     }
@@ -62,6 +64,14 @@ public class Products implements Serializable {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public Long getId() {

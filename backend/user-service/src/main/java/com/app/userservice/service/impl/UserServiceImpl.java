@@ -25,7 +25,7 @@ import com.app.userservice.exception.EmailNotAssosiatedWithUserException;
 import com.app.userservice.service.UserService;
 import com.app.userservice.exception.UserAlreadyExistsException;
 import com.app.userservice.exception.UserNotVerifiedException;
-import com.app.userservice.exception.UserNotExistedException;
+import com.app.userservice.exception.UserNotFoundException;
 import com.app.userservice.service.EmailService;
 import jakarta.transaction.Transactional;
 import java.sql.Timestamp;
@@ -88,10 +88,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Users> getUserByUserId(Long userId) throws UserNotExistedException {
+    public Optional<Users> getUserByUserId(Long userId) throws UserNotFoundException {
         Optional<Users> res = userRepository.findById(userId);
         if (!res.isPresent()) {
-            throw new UserNotExistedException();
+            throw new UserNotFoundException();
         }
 
         return res;
@@ -128,10 +128,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
-            throws UserNotVerifiedException, EmailFailureException, UserNotExistedException {
+            throws UserNotVerifiedException, EmailFailureException, UserNotFoundException {
         Optional<Users> existingUser = this.getUserByUsername(signInUserRequestDTO.getUsername());
         if (!existingUser.isPresent()) {
-            throw new UserNotExistedException();
+            throw new UserNotFoundException();
         }
 
         SignInUserResponseDTO signInUserResponseDTO = null;
@@ -184,10 +184,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException, EmailFailureException {
+            throws UserNotFoundException, EmailNotAssosiatedWithUserException, EmailFailureException {
         Optional<Users> opUser = userRepository.findByUsername(forgotPasswordRequestDTO.getUsername());
         if (!opUser.isPresent()) {
-            throw new UserNotExistedException();
+            throw new UserNotFoundException();
         }
 
         Users user = opUser.get();
@@ -201,14 +201,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(ResetPasswordRequestDTO resetPasswordRequestDTO)
-            throws UserNotExistedException, EmailNotAssosiatedWithUserException, Exception {
-        String username = jwtService.getUsername(resetPasswordRequestDTO.getToken());
-        String email = jwtService.getPasswordResetEmail(resetPasswordRequestDTO.getToken());
+            throws UserNotFoundException, EmailNotAssosiatedWithUserException, Exception {
+        String token = resetPasswordRequestDTO.getToken();
 
-        Optional<Users> opUser = userRepository.findByUsername(username);
-        if (!opUser.isPresent()) {
-            throw new UserNotExistedException();
-        }
+        Long userId = jwtService.getUserId(token);
+        String email = jwtService.getPasswordResetEmail(token);
+
+        Optional<Users> opUser = this.getUserByUserId(userId);
 
         Users user = opUser.get();
         if (!user.getEmail().equals(email)) {
@@ -221,18 +220,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthUserDTO authenticate(String accessToken)
-            throws UserNotExistedException, Exception {
+            throws UserNotFoundException, Exception {
         if (accessToken == null) {
             return null;
         }
 
         accessToken = accessToken.replaceFirst("Bearer ", "");
-        String username = jwtService.getUsername(accessToken);
+        Long userId = jwtService.getUserId(accessToken);
 
-        Optional<Users> opUser = this.getUserByUsername(username);
-        if (!opUser.isPresent()) {
-            throw new UserNotExistedException();
-        }
+        Optional<Users> opUser = this.getUserByUserId(userId);
 
         Users user = opUser.get();
         Roles role = user.getRoles();

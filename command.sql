@@ -28,6 +28,9 @@ FROM public.variants;
 SELECT variant_id, variant_value_id
 FROM public.variants_variant_values;
 
+SELECT quantity, order_id, product_id, variant_id
+FROM public.order_details;
+
 delete from public.users;
 
 INSERT INTO users (username, email, first_name, last_name, password, role_id, email_verified)
@@ -35,4 +38,6 @@ VALUES
 ('user4', 'user1@gmail.com', 'first_name', 
 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 2, true);
 
-
+INSERT INTO order_details (order_id, product_id, variant_id, quantity)
+VALUES 
+(1, 2, 2, 10);

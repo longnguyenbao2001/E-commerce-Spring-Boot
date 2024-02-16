@@ -18,7 +18,7 @@ public interface JWTService {
 
     public String generateJWTPasswordResetToken(Users user);
 
-    public String getUsername(String token)
+    public Long getUserId(String token)
             throws Exception;
 
     public String getPasswordResetEmail(String token);

@@ -17,9 +17,6 @@ import java.util.List;
 public class CreateVariantRequestDTO {
 
     @NotNull
-    @Digits(integer = 15, fraction = 0)
-    private Long productId;
-    @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     @Digits(integer = 15, fraction = 0)
     private BigDecimal unitPrice;
@@ -28,14 +25,6 @@ public class CreateVariantRequestDTO {
     private Integer quantity;
     @NotNull
     private List<CreateVariantValueRequestDTO> listVariantValues;
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 
     public BigDecimal getUnitPrice() {
         return unitPrice;
