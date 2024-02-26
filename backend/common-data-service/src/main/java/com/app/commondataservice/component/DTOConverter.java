@@ -4,6 +4,7 @@
  */
 package com.app.commondataservice.component;
 
+import com.app.commondataservice.dto.GetVariantsQuantityResponseDTO;
 import com.app.commondataservice.dto.ProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.dto.VariantValueDTO;
@@ -64,5 +65,11 @@ public class DTOConverter {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
 
         return productDTO;
+    }
+
+    public GetVariantsQuantityResponseDTO convertVariantToQuantityDTO(Variants variant) {
+        GetVariantsQuantityResponseDTO variantDTO = modelMapper.map(variant, GetVariantsQuantityResponseDTO.class);
+
+        return variantDTO;
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author user
  */
 @Configuration
-public class MapperConfig {
+public class AppConfig {
     
     @Bean
     public ModelMapper modelMapper () {

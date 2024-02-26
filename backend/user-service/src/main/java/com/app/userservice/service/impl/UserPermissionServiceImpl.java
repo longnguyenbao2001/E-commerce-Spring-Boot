@@ -37,7 +37,7 @@ public class UserPermissionServiceImpl implements UserPermissionService {
 
     @Override
     public boolean isAdmin(AuthUserDTO authUserDTO) throws UserNotFoundException {
-        Optional<Users> opUser = userService.getUserByUserId(authUserDTO.getId());
+        Optional<Users> opUser = userService.findUserByUserId(authUserDTO.getId());
 
         Users user = opUser.get();
         if (!(authUserDTO.getRoleName().equals(env.getProperty("role.admin")))

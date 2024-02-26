@@ -41,10 +41,6 @@ public class OrderDetails implements Serializable {
     @JoinColumn(name = "variant_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Variants variants;
-    @Column(name = "product_id", updatable = false, insertable = false)
-    private Long productId;
-    @Column(name = "variant_id", updatable = false, insertable = false)
-    private Long variantId;
 
     public OrderDetails() {
     }
@@ -100,22 +96,6 @@ public class OrderDetails implements Serializable {
 
     public void setVariants(Variants variants) {
         this.variants = variants;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public Long getVariantId() {
-        return variantId;
-    }
-
-    public void setVariantId(Long variantId) {
-        this.variantId = variantId;
     }
 
     @Override

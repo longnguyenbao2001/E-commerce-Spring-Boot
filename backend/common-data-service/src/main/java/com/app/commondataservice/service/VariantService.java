@@ -7,6 +7,7 @@ package com.app.commondataservice.service;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.CreateVariantRequestDTO;
 import com.app.commondataservice.dto.CreateVariantValueRequestDTO;
+import com.app.commondataservice.dto.GetVariantsQuantityResponseDTO;
 import com.app.commondataservice.dto.PutVariantRequestDTO;
 import com.app.commondataservice.dto.PutVariantValueRequestDTO;
 import com.app.commondataservice.dto.VariantDTO;
@@ -59,5 +60,8 @@ public interface VariantService {
             throws DataNotFoundException;
 
     public void deleteVariant(Long variantId, AuthUserDTO authUserDTO, Long refUserId)
+            throws DataNotFoundException;
+
+    public List<GetVariantsQuantityResponseDTO> getVariantsQuantity(List<Long> listVariantsIds)
             throws DataNotFoundException;
 }

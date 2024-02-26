@@ -24,15 +24,21 @@ public class DTOConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public OrderDTO convertOrderToDTO(Orders orders) {
-        OrderDTO orderDTO = modelMapper.map(orders, OrderDTO.class);
+    public OrderDTO convertOrderToDTO(Orders order) {
+        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
 
         return orderDTO;
     }
 
-//    public OrderDetailDTO convertOrderDetailToDTO(OrderDetails orderDetails) {
+    public OrderDetailDTO convertOrderDetailToDTO(OrderDetails orderDetail) {
 //        OrderDetailDTO orderDetailDTO = modelMapper.map(orderDetails, OrderDetailDTO.class);
-//
-//        return orderDetailDTO;
-//    }
+        OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+
+        orderDetailDTO.setQuantity(orderDetail.getQuantity());
+        orderDetailDTO.setOrderId(orderDetail.getOrderDetailsPK().getOrderId());
+        orderDetailDTO.setProductId(orderDetail.getOrderDetailsPK().getProductId());
+        orderDetailDTO.setVariantId(orderDetail.getOrderDetailsPK().getVariantId());
+
+        return orderDetailDTO;
+    }
 }

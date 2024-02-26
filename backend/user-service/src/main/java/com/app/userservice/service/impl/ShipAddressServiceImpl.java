@@ -51,7 +51,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
 
     @Override
     public List<ShipAddressDTO> getShipAddressByUser(AuthUserDTO authUserDTO) throws UserNotFoundException {
-        Optional<Users> existingUser = userService.getUserByUserId(authUserDTO.getId());
+        Optional<Users> existingUser = userService.findUserByUserId(authUserDTO.getId());
 
         List<ShipAddressDTO> res = new ArrayList<>();
         for (ShipAddresses shipAddresses : shipAddressRepository.findByUsers_Id(existingUser.get().getId())) {
@@ -71,7 +71,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     @Override
     public void createShipAddress(CreateShipAddressRequestDTO createShipAddressRequestDTO, Long refUserId)
             throws UserNotFoundException {
-        Optional<Users> existingUser = userService.getUserByUserId(refUserId);
+        Optional<Users> existingUser = userService.findUserByUserId(refUserId);
 
         ShipAddresses shipAddresses = new ShipAddresses();
         shipAddresses.setAddressLine1(createShipAddressRequestDTO.getAddressLine1());
@@ -89,7 +89,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     @Transactional
     public void putShipAddress(PutShipAddressRequestDTO putShipAddressRequestDTO, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotFoundException, DataNotFoundException, UserHasNoPermissionException {
-        Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
+        Optional<Users> opRefUser = userService.findUserByUserId(refUserId);
         Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(putShipAddressRequestDTO.getId());
         ShipAddresses shipAddresses = opShipAddresses.get();
@@ -115,7 +115,7 @@ public class ShipAddressServiceImpl implements ShipAddressService {
     @Transactional
     public void deleteShipAddress(Long addressId, AuthUserDTO authUserDTO, Long refUserId)
             throws UserNotFoundException, DataNotFoundException, UserHasNoPermissionException {
-        Optional<Users> opRefUser = userService.getUserByUserId(refUserId);
+        Optional<Users> opRefUser = userService.findUserByUserId(refUserId);
         Users refUser = opRefUser.get();
         Optional<ShipAddresses> opShipAddresses = this.findByShipAddressId(addressId);
         ShipAddresses shipAddresses = opShipAddresses.get();

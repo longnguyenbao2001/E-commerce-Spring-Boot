@@ -5,6 +5,7 @@
 package com.app.orderservice.dao;
 
 import com.app.orderservice.entity.OrderDetails;
+import com.app.orderservice.entity.OrderDetailsPK;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OrderDetailRepository extends JpaRepository<OrderDetails, Long> {
 
     List<OrderDetails> findByOrders_Id(Long orderId);
+
+    Optional<OrderDetails> findByOrderDetailsPK(OrderDetailsPK orderDetailsPK);
 }

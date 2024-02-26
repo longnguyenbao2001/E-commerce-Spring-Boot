@@ -81,14 +81,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Users> getUserByUsername(String username) {
+    public Optional<Users> findUserByUsername(String username) {
         Optional<Users> result = userRepository.findByUsername(username);
 
         return result;
     }
 
     @Override
-    public Optional<Users> getUserByUserId(Long userId) throws UserNotFoundException {
+    public Optional<Users> findUserByUserId(Long userId) throws UserNotFoundException {
         Optional<Users> res = userRepository.findById(userId);
         if (!res.isPresent()) {
             throw new UserNotFoundException();
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
             throws UserAlreadyExistsException, EmailFailureException {
-        Optional<Users> existingUser = this.getUserByUsername(signUpUserRequestDTO.getUsername());
+        Optional<Users> existingUser = this.findUserByUsername(signUpUserRequestDTO.getUsername());
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException();
         }
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SignInUserResponseDTO signIn(SignInUserRequestDTO signInUserRequestDTO)
             throws UserNotVerifiedException, EmailFailureException, UserNotFoundException {
-        Optional<Users> existingUser = this.getUserByUsername(signInUserRequestDTO.getUsername());
+        Optional<Users> existingUser = this.findUserByUsername(signInUserRequestDTO.getUsername());
         if (!existingUser.isPresent()) {
             throw new UserNotFoundException();
         }
@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
         Long userId = jwtService.getUserId(token);
         String email = jwtService.getPasswordResetEmail(token);
 
-        Optional<Users> opUser = this.getUserByUserId(userId);
+        Optional<Users> opUser = this.findUserByUserId(userId);
 
         Users user = opUser.get();
         if (!user.getEmail().equals(email)) {
@@ -228,7 +228,7 @@ public class UserServiceImpl implements UserService {
         accessToken = accessToken.replaceFirst("Bearer ", "");
         Long userId = jwtService.getUserId(accessToken);
 
-        Optional<Users> opUser = this.getUserByUserId(userId);
+        Optional<Users> opUser = this.findUserByUserId(userId);
 
         Users user = opUser.get();
         Roles role = user.getRoles();

@@ -10,6 +10,7 @@ import com.app.commondataservice.dao.VariantValueRepository;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.CreateVariantRequestDTO;
 import com.app.commondataservice.dto.CreateVariantValueRequestDTO;
+import com.app.commondataservice.dto.GetVariantsQuantityResponseDTO;
 import com.app.commondataservice.dto.PutVariantRequestDTO;
 import com.app.commondataservice.dto.PutVariantValueRequestDTO;
 import com.app.commondataservice.dto.VariantDTO;
@@ -207,5 +208,19 @@ public class VariantServiceImpl implements VariantService {
         }
 
         variantRepository.delete(variant);
+    }
+
+    @Override
+    public List<GetVariantsQuantityResponseDTO> getVariantsQuantity(List<Long> listVariantsIds)
+            throws DataNotFoundException {
+        List<GetVariantsQuantityResponseDTO> res = new ArrayList<>();
+
+        Variants variant;
+        for (Long variantId : listVariantsIds) {
+            variant = this.findVariantByVariantId(variantId);
+            res.add(dtoConverter.convertVariantToQuantityDTO(variant));
+        }
+
+        return res;
     }
 }

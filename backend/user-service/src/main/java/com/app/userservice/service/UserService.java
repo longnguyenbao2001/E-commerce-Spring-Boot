@@ -25,9 +25,9 @@ import java.util.Optional;
  */
 public interface UserService {
 
-    public Optional<Users> getUserByUsername(String username);
+    public Optional<Users> findUserByUsername(String username);
 
-    public Optional<Users> getUserByUserId(Long userId)
+    public Optional<Users> findUserByUserId(Long userId)
             throws UserNotFoundException;
 
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)

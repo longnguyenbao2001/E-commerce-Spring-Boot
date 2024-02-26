@@ -31,6 +31,12 @@ FROM public.variants_variant_values;
 SELECT quantity, order_id, product_id, variant_id
 FROM public.order_details;
 
+SELECT id, order_date, customer_id
+FROM public.orders;
+
+SELECT quantity, order_id, product_id, variant_id
+FROM public.order_details;
+
 delete from public.users;
 
 INSERT INTO users (username, email, first_name, last_name, password, role_id, email_verified)
