@@ -5,7 +5,11 @@
 package com.app.commondataservice.service;
 
 import com.app.commondataservice.dto.AuthUserDTO;
+import com.app.commondataservice.dto.UploadFilesResponseDTO;
 import com.app.commondataservice.exception.UserNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -15,4 +19,7 @@ public interface CallApiService {
 
     public AuthUserDTO authenticate(String accessTokenHeader)
             throws UserNotFoundException;
+
+    public UploadFilesResponseDTO uploadImages(List<MultipartFile> files)
+            throws IOException;
 }

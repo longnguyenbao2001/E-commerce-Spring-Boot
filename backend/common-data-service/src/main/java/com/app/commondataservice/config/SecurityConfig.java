@@ -26,16 +26,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity
+//                .csrf().disable()
+//                .cors().disable()
+//                .authorizeRequests(authorizeRequests
+//                        -> authorizeRequests
+//                        .requestMatchers("/products",
+//                                "/products/{productId}",
+//                                "/products/{productId}/variants",
+//                                "/variants").permitAll()
+//                        .anyRequest().authenticated()
+//                )
+//                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity
                 .csrf().disable()
                 .cors().disable()
                 .authorizeRequests(authorizeRequests
                         -> authorizeRequests
-                        .requestMatchers("/products",
-                                "/products/{productId}",
-                                "/products/{productId}/variants",
-                                "/variants").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/products/images").authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

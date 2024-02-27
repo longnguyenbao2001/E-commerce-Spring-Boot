@@ -43,6 +43,8 @@ public class Products implements Serializable {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    private List<ProductImages> productImagesList;
+    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
     private List<Variants> variantsList;
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,8 +52,6 @@ public class Products implements Serializable {
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
-    @Column(name = "seller_id", updatable = false, insertable = false)
-    private Long sellerId;
 
     public Products() {
     }
@@ -64,14 +64,6 @@ public class Products implements Serializable {
         this.id = id;
         this.name = name;
         this.description = description;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
     }
 
     public Long getId() {
@@ -96,6 +88,14 @@ public class Products implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<ProductImages> getProductImagesList() {
+        return productImagesList;
+    }
+
+    public void setProductImagesList(List<ProductImages> productImagesList) {
+        this.productImagesList = productImagesList;
     }
 
     public List<Variants> getVariantsList() {

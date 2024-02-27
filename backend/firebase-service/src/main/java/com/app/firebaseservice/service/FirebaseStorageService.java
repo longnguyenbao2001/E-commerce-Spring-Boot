@@ -4,8 +4,10 @@
  */
 package com.app.firebaseservice.service;
 
+import com.app.firebaseservice.dto.UploadFilesResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -13,5 +15,5 @@ import java.io.IOException;
  */
 public interface FirebaseStorageService {
 
-    public String uploadProductImage(MultipartFile file) throws IOException;
+    public UploadFilesResponseDTO uploadImages(List<MultipartFile> files) throws IOException;
 }

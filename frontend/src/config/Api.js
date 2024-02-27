@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const endpoints = {
     'signin': '/auth/signin',
+    'signup': '/auth/signup',
     // 'route-detail': (routeId) => `/routes/${routeId}/`,
 }
 

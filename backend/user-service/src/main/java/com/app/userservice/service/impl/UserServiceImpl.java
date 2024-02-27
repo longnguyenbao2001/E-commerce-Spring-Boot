@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO signUp(SignUpUserRequestDTO signUpUserRequestDTO)
             throws UserAlreadyExistsException, EmailFailureException {
         Optional<Users> existingUser = this.findUserByUsername(signUpUserRequestDTO.getUsername());
@@ -119,7 +120,7 @@ public class UserServiceImpl implements UserService {
 
         user = userRepository.save(user);
 
-        VerificationTokens verificationTokens = createVerificationToken(user);
+        VerificationTokens verificationTokens = this.createVerificationToken(user);
         emailService.sendVerificationEmail(verificationTokens);
         verificationTokenRepository.save(verificationTokens);
 
@@ -140,7 +141,7 @@ public class UserServiceImpl implements UserService {
             if (user.getEmailVerified()) {
                 signInUserResponseDTO = new SignInUserResponseDTO();
                 signInUserResponseDTO.setJwtAccessToken(jwtService.generateJWTAccessToken(user));
-                signInUserResponseDTO.setSuccess(true);
+                signInUserResponseDTO.setUserData(dtoConverter.convertUserToUserDTO(user));
 
                 return signInUserResponseDTO;
             } else {

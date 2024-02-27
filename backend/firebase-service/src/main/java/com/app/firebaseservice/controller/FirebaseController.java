@@ -4,10 +4,12 @@
  */
 package com.app.firebaseservice.controller;
 
+import com.app.firebaseservice.dto.UploadFilesResponseDTO;
 import com.app.firebaseservice.handler.HttpErrorResponseHandler;
 import com.app.firebaseservice.handler.HttpResponseHandler;
 import com.app.firebaseservice.service.FirebaseStorageService;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +39,10 @@ public class FirebaseController {
     @Autowired
     private HttpResponseHandler httpResponseHandler;
 
-    @PostMapping("/products/uploadImage")
-    public ResponseEntity<?> uploadProductImage(@RequestParam(name = "file", required = false) MultipartFile file) {
+    @PostMapping("/uploadImages")
+    public ResponseEntity<?> uploadProductImage(@RequestParam(name = "files", required = false) List<MultipartFile> files) {
         try {
-            String res = firebaseStorageService.uploadProductImage(file);
+            UploadFilesResponseDTO res = firebaseStorageService.uploadImages(files);
 
             return httpResponseHandler.handleAcceptedRequest(res);
         } catch (IOException e) {

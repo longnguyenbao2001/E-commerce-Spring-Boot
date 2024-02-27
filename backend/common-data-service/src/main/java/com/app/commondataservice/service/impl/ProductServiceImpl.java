@@ -12,6 +12,7 @@ import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.entity.Categories;
 import com.app.commondataservice.entity.Products;
 import com.app.commondataservice.entity.Users;
+import com.app.commondataservice.service.CallApiService;
 import com.app.commondataservice.exception.DataNotFoundException;
 import org.springframework.stereotype.Service;
 import com.app.commondataservice.service.ProductService;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -34,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private DTOConverter dtoConverter;
+
+    @Autowired
+    private CallApiService callApiService;
 
     @Override
     public Products findProductByProductId(Long productId)
@@ -98,5 +104,10 @@ public class ProductServiceImpl implements ProductService {
         Products product = this.findProductByProductId(productId);
 
         productRepository.delete(product);
+    }
+
+    @Override
+    public void createProductImages(List<MultipartFile> files) throws IOException {
+        callApiService.uploadImages(files);
     }
 }

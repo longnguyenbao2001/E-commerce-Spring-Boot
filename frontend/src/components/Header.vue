@@ -30,8 +30,14 @@
           <li class="nav-item">
             <a class="nav-link disabled">Disabled</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!isAuthenticated">
             <router-link to="/signin" class="nav-link">Sign In</router-link>
+          </li>
+          <li class="nav-item" v-if="!isAuthenticated">
+            <router-link to="/signup" class="nav-link">Sign Up</router-link>
+          </li>
+          <li class="nav-item" v-else>
+            <a class="nav-link" href="#" @click="signOut">Sign out</a>
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -45,6 +51,19 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  computed: {
+    isAuthenticated() {
+      return this.$store.state.isAuthenticated;
+    }
+  },
+  methods: {
+    signOut() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userData');
+
+      this.$store.dispatch('updateAuthenticationStatus', false);
+    }
+  }
 }
 </script>

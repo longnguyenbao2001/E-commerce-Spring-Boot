@@ -51,6 +51,13 @@ create table products (
 	foreign key(category_id) references categories(id) on delete set null
 );
 
+create table product_images (
+	id BIGSERIAL primary key,
+	url VARCHAR(2048) not null,
+	product_id BIGINT,
+	foreign key(product_id) references products(id) on delete cascade
+);
+
 create table variants (
 	id BIGSERIAL primary key,
 	product_id BIGINT,

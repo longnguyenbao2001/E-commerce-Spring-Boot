@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -190,6 +191,19 @@ public class ProductController {
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (DataNotFoundException e) {
             return httpErrorResponseHandler.handleBadRequest(env.getProperty("mes.data.notFound"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @PostMapping("/images")
+    public ResponseEntity<?> createProductImages(@AuthenticationPrincipal AuthUserDTO authUserDTO,
+            @RequestParam(name = "files", required = false) List<MultipartFile> files) {
+        try {
+//            System.out.println(authUserDTO.getId());
+            productService.createProductImages(files);
+
+            return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

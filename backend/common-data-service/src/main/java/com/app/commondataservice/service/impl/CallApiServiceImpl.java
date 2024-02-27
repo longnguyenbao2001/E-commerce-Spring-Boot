@@ -5,12 +5,20 @@
 package com.app.commondataservice.service.impl;
 
 import com.app.commondataservice.dto.AuthUserDTO;
+import com.app.commondataservice.dto.UploadFilesResponseDTO;
 import com.app.commondataservice.service.CallApiService;
 import com.app.commondataservice.exception.UserNotFoundException;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -44,5 +52,26 @@ public class CallApiServiceImpl implements CallApiService {
         } catch (Exception e) {
             throw new UserNotFoundException();
         }
+    }
+
+    @Override
+    public UploadFilesResponseDTO uploadImages(List<MultipartFile> files) throws IOException {
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        for (MultipartFile file : files) {
+            parts.add("files", file.getResource());
+        }
+
+        Mono<UploadFilesResponseDTO> monoDownloadUrls = webClientBuilder.baseUrl(env.getProperty("api.firebaseservice.url"))
+                .build()
+                .post()
+                .uri(env.getProperty("api.firebaseservice.endpoint.uploadImages"))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(parts))
+                .retrieve()
+                .bodyToMono(UploadFilesResponseDTO.class);
+
+        UploadFilesResponseDTO downloadUrls = monoDownloadUrls.block();
+
+        return downloadUrls;
     }
 }

@@ -12,6 +12,8 @@ import com.app.commondataservice.dto.PutProductRequestDTO;
 import java.util.List;
 import com.app.commondataservice.entity.Products;
 import com.app.commondataservice.exception.DataNotFoundException;
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -34,4 +36,7 @@ public interface ProductService {
 
     public void deleteProduct(Long productId, AuthUserDTO authUserDTO, Long refUserId)
             throws DataNotFoundException;
+
+    public void createProductImages(List<MultipartFile> files)
+            throws IOException;
 }

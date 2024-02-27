@@ -12,9 +12,7 @@ public class SignInUserResponseDTO {
 
     private String jwtAccessToken;
 
-    private boolean success;
-
-    private String message;
+    private UserDTO userData;
 
     public String getJwtAccessToken() {
         return jwtAccessToken;
@@ -24,20 +22,11 @@ public class SignInUserResponseDTO {
         this.jwtAccessToken = jwtAccessToken;
     }
 
-    public boolean isSuccess() {
-        return success;
+    public UserDTO getUserData() {
+        return userData;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setUserData(UserDTO userData) {
+        this.userData = userData;
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
 }
