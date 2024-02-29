@@ -38,7 +38,9 @@ CREATE TABLE verification_tokens (
 CREATE TABLE categories (
 	id BIGSERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL, 
-	description TEXT
+	description text,
+	parent_category_id BIGINT,
+	foreign key(parent_category_id) references categories(id) on delete set null
 );
 
 create table products (
@@ -46,10 +48,17 @@ create table products (
 	name VARCHAR(255) not null, 
 	description text not null,
 	seller_id BIGINT,
-	category_id BIGINT,
-	foreign key(seller_id) references users(id) on delete set null,
-	foreign key(category_id) references categories(id) on delete set null
+	foreign key(seller_id) references users(id) on delete set null
 );
+
+create table products_categories (
+	product_id BIGINT,
+	category_id BIGINT,
+	primary key(product_id, category_id),
+	foreign key(product_id) references products(id) on delete cascade,
+	foreign key(category_id) references categories(id) on delete cascade
+);
+
 
 create table product_images (
 	id BIGSERIAL primary key,
@@ -116,24 +125,51 @@ VALUES
 ('user1', 'user1@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true),
 ('user2', 'user2@gmail.com', 'first_name', 'last_name', '$2a$10$.BeHONljnDAimNUU8GNnBORMqjIEvfHW1Fqg/99vM4cPbSxhko89K', 1, true);
 
-INSERT INTO categories (name, description)
+INSERT INTO categories (name, description, parent_category_id)
 VALUES 
-('category 1', 'category description 1'), 
-('category 2', 'category description 2'), 
-('category 3', 'category description 3');
+('category 1', 'category description 1', null), 
+('category 2', 'category description 2', 1), 
+('category 3', 'category description 3', 1),
+('category 4', 'category description 4', 1);
 
-INSERT INTO products (name, description, seller_id, category_id)
+INSERT INTO products (name, description, seller_id)
 VALUES 
-('product 1', 'product description 1', 1, 1), 
-('product 2', 'product description 2', 1, 1),
-('product 3', 'product description 3', 1, 1),
-('product 4', 'product description 4', 1, 1),
-('product 5', 'product description 5', 1, 1),
-('product 6', 'product description 6', 1, 1),
-('product 7', 'product description 7', 1, 1),
-('product 8', 'product description 8', 1, 1),
-('product 9', 'product description 9', 1, 1),
-('product 10', 'product description 10', 1, 1);
+('product 1', 'product description 1', 1), 
+('product 2', 'product description 2', 1),
+('product 3', 'product description 3', 1),
+('product 4', 'product description 4', 1),
+('product 5', 'product description 5', 1),
+('product 6', 'product description 6', 1),
+('product 7', 'product description 7', 1),
+('product 8', 'product description 8', 1),
+('product 9', 'product description 9', 1),
+('product 10', 'product description 10', 1);
+
+INSERT INTO products_categories (product_id, category_id)
+VALUES 
+(1, 2), 
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 3),
+(8, 3),
+(9, 3),
+(10, 4);
+
+INSERT INTO product_images  (product_id, url)
+VALUES 
+(1, 'https://picsum.photos/id/2/5000/3333'), 
+(2, 'https://picsum.photos/id/2/5000/3333'),
+(3, 'https://picsum.photos/id/2/5000/3333'),
+(4, 'https://picsum.photos/id/2/5000/3333'),
+(5, 'https://picsum.photos/id/2/5000/3333'),
+(6, 'https://picsum.photos/id/2/5000/3333'),
+(7, 'https://picsum.photos/id/2/5000/3333'),
+(8, 'https://picsum.photos/id/2/5000/3333'),
+(9, 'https://picsum.photos/id/2/5000/3333'),
+(10, 'https://picsum.photos/id/2/5000/3333');
 
 INSERT INTO variant_labels (name)
 VALUES 
@@ -151,7 +187,16 @@ INSERT INTO variants (unit_price, quantity, product_id)
 VALUES 
 (300000, 10, 1), --create combined variant price and quantity for blue, 2gb, small  variant
 (320000, 10, 1), --create combined variant price and quantity for black, 3gb, medium  variant
-(280000, 10, 1); --create combined variant price and quantity for yellow, 6gb, large  variant
+(280000, 10, 1), --create combined variant price and quantity for yellow, 6gb, large  variant
+(140000, 10, 2),
+(140000, 10, 3),
+(140000, 10, 4),
+(140000, 10, 5),
+(140000, 10, 6),
+(140000, 10, 7),
+(140000, 10, 8),
+(140000, 10, 9),
+(140000, 10, 10);
 
 INSERT INTO variants_variant_values (variant_id, variant_value_id)
 VALUES 
@@ -167,3 +212,42 @@ VALUES
 (1, 1, 1, 10), 
 (1, 1, 2, 5),
 (1, 1, 3, 7);
+
+update products 
+set description = 'Bạn cần một chiếc Laptop để Học tập, Làm việc, hoặc Giải trí, chơi GAME nhẹ. Một số mẫu Laptop dưới đây sẽ đáp ứng được yêu cầu của bạn. Shop AnhVu xin giới thiệu một số mẫu Laptop dựa trên tiêu chí: Giá cả phù hợp, hình thức đẹp, hoạt động ổn định, giúp Quý khách lựa chọn một cách dễ dàng. 
+- Quý khách có thể nhờ SHOP tư vấn qua kênh CHAT của Shopee. Nhấn vào MUA HÀNG rồi chọn từng loại cụ thể.
+- Shop đã phân loại dựa theo Khung Giá tiền để Quý khách lựa chọn dễ dàng.
+- Mọi Laptop bán ra đều được kiểm tra kỹ trước khi giao.
+
+👉 Phù hợp các công việc và giải trí:
+- Các công việc văn phòng: word, excel, in ấn văn bản...
+- Phù hợp bán hàng online
+- Phù hợp học sinh, sinh viên học tập, học Online Zoom, meeting...
+- Phù hợp với việc giải trí: xem phim, nghe nhạc, lướt web..
+- Chơi game nhẹ nhàng không đòi hỏi card đồ hoạ cao.
+
+👉 Thông số kỹ thuật:
+- CPU: Từ pentium, Core 2 Duo, Core i3, Core i5, Core i7 thế hệ 1, 2, 3, 4, 5
+- Bộ nhớ Ram: Từ 2Gb - 8Gb tùy loại
+- Ổ cứng lưu trữ: HDD 250Gb-500gb, hoặc SSD 120-250G
+- Màn hình: 14inch -15.6 inch
+- Pin: Đối với Laptop dướ 3Tr Pin đạt trên 60p, Đối với Laptop trên 3Tr Pin đạt trên 2h sử dụng
+
+👉 Sản phẩm gồm có :
+- 01 Laptop 
+- 01 bộ sạc đi kèm máy
+- 01 chuột quang tặng kèm với LAPTOP trên 3tr
+- 01 Cặp xách tặng kèm với LAPTOP trên 3tr
+
+👉 Cam kết và bảo hành:
+- Cam kết máy nguyên bản, chưa sửa chữa
+- Bảo hành 1 tháng. 1 đổi 1 trong 7 ngày đầu tiên
+- Hỗ trợ phí dịch vụ sửa chữa( nếu có) sau thời gian bảo hành.
+
+==&gt; Lưu ý:
+- Sản phẩm Shop giao ngẫu nhiên nhiều Model của nhiều hãng tùy theo Tồn kho và Giá sản phẩm.
+- Quý khách có yêu cầu về Hãng, Model, Màu sắc, Hệ điều hành.... xin vui lòng liên hệ với SHOP hoặc qua kênh CHAT.
+
+▶▶▶ Địa Chỉ Liên Hệ ◀ ◀ ◀
+✪ VietThangPC
+✪ Hotline:--0972.834.386';

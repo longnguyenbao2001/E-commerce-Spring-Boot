@@ -13,11 +13,17 @@ FROM public.ship_addresses;
 SELECT id, "token", created_timestamp, user_id
 FROM public.verification_tokens;
 
-SELECT id, "name", description
+SELECT id, "name", description, parent_category_id
 FROM public.categories;
 
-SELECT id, "name", description, seller_id, category_id
+SELECT product_id, category_id
+FROM public.products_categories;
+
+SELECT id, "name", description, seller_id
 FROM public.products;
+
+SELECT id, url, product_id
+FROM public.product_images;
 
 SELECT id, "name"
 FROM public.variant_labels;

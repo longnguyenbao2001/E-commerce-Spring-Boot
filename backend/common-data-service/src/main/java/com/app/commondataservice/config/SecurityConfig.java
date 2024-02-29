@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .cors().disable()
                 .authorizeRequests(authorizeRequests
                         -> authorizeRequests
-                        .requestMatchers("/products/images").authenticated()
+                        .requestMatchers("/products/{productId}/images").authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

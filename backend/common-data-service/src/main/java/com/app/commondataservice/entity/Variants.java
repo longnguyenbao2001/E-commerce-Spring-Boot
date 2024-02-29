@@ -10,7 +10,6 @@ import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,10 +47,10 @@ public class Variants implements Serializable {
     @JoinTable(name = "variants_variant_values", joinColumns = {
         @JoinColumn(name = "variant_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "variant_value_id", referencedColumnName = "id")})
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     private List<VariantValues> variantValuesList;
     @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Products products;
 
     public Variants() {

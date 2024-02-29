@@ -9,10 +9,13 @@ import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -39,8 +42,16 @@ public class Categories implements Serializable {
     private String name;
     @Column(name = "description")
     private String description;
-    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @JoinTable(name = "products_categories", joinColumns = {
+        @JoinColumn(name = "category_id", referencedColumnName = "id")}, inverseJoinColumns = {
+        @JoinColumn(name = "product_id", referencedColumnName = "id")})
+    @ManyToMany
     private List<Products> productsList;
+    @OneToMany(mappedBy = "categories")
+    private List<Categories> categoriesList;
+    @JoinColumn(name = "parent_category_id", referencedColumnName = "id")
+    @ManyToOne
+    private Categories categories;
 
     public Categories() {
     }
@@ -84,6 +95,22 @@ public class Categories implements Serializable {
 
     public void setProductsList(List<Products> productsList) {
         this.productsList = productsList;
+    }
+
+    public List<Categories> getCategoriesList() {
+        return categoriesList;
+    }
+
+    public void setCategoriesList(List<Categories> categoriesList) {
+        this.categoriesList = categoriesList;
+    }
+
+    public Categories getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Categories categories) {
+        this.categories = categories;
     }
 
     @Override

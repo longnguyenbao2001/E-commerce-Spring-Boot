@@ -11,8 +11,9 @@ import com.app.commondataservice.dto.ProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.entity.Categories;
 import com.app.commondataservice.entity.Products;
+import com.app.commondataservice.entity.ProductImages;
 import com.app.commondataservice.entity.Users;
-import com.app.commondataservice.service.CallApiService;
+import com.app.commondataservice.entity.Variants;
 import com.app.commondataservice.exception.DataNotFoundException;
 import org.springframework.stereotype.Service;
 import com.app.commondataservice.service.ProductService;
@@ -21,9 +22,13 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.app.commondataservice.dto.AuthUserDTO;
+import com.app.commondataservice.dto.ListProductDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
-import java.io.IOException;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -39,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     private DTOConverter dtoConverter;
 
     @Autowired
-    private CallApiService callApiService;
+    private Environment env;
 
     @Override
     public Products findProductByProductId(Long productId)
@@ -53,13 +58,50 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getListProduct(String keyword) {
-        List<ProductDTO> res = new ArrayList<>();
+    public ListProductDTO getListProduct(
+            String keyword, List<Long> categoryIds,
+            Integer page, Integer pageSize, List<String> orderBy, String orderDirection) {
+        ListProductDTO res = new ListProductDTO();
 
-        for (Products product : productRepository.findByNameContaining(keyword)) {
-            res.add(dtoConverter.convertProductToDTO(product));
+        Sort.Direction direction;
+        if (orderDirection.equals(env.getProperty("pagination.sort.direction.desc"))) {
+            direction = Sort.Direction.DESC;
+        } else {
+            direction = Sort.Direction.ASC;
         }
 
+        List<Sort.Order> sortOrders = new ArrayList<>();
+        for (String column : orderBy) {
+            sortOrders.add(new Sort.Order(direction, column));
+        }
+        Sort sort = Sort.by(sortOrders);
+
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+
+        List<Products> listProducts;
+        if (categoryIds != null) {
+            res.setTotalCount(productRepository.countByNameContainingAndCategoriesList_IdIn(keyword, categoryIds));
+            listProducts = productRepository.findByNameContainingAndCategoriesList_IdIn(keyword, categoryIds, pageable);
+        } else {
+            res.setTotalCount(productRepository.countByNameContaining(keyword));
+            listProducts = productRepository.findByNameContaining(keyword, pageable);
+        }
+
+        for (Products product : listProducts) {
+            ProductDTO productDTO = dtoConverter.convertProductToDTO(product);
+
+            for (ProductImages pm : product.getProductImagesList()) {
+                productDTO.setImageUrl(pm.getUrl());
+                break;
+            }
+
+            for (Variants v : product.getVariantsList()) {
+                productDTO.setUnitPrice(v.getUnitPrice());
+                break;
+            }
+
+            res.getListProducts().add(productDTO);
+        }
         return res;
     }
 
@@ -78,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
         product.setUsers(user);
 
         Categories category = new Categories(createProductRequestDTO.getCategoryId());
-        product.setCategories(category);
+//        product.setCategories(category);
 
         productRepository.save(product);
 
@@ -93,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(putProductRequestDTO.getDescription());
 
         Categories category = new Categories(putProductRequestDTO.getCategoryId());
-        product.setCategories(category);
+//        product.setCategories(category);
 
         productRepository.save(product);
     }
@@ -104,10 +146,5 @@ public class ProductServiceImpl implements ProductService {
         Products product = this.findProductByProductId(productId);
 
         productRepository.delete(product);
-    }
-
-    @Override
-    public void createProductImages(List<MultipartFile> files) throws IOException {
-        callApiService.uploadImages(files);
     }
 }

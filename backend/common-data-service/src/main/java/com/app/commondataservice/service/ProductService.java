@@ -6,14 +6,12 @@ package com.app.commondataservice.service;
 
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.CreateProductRequestDTO;
-import com.app.commondataservice.dto.ProductDTO;
+import com.app.commondataservice.dto.ListProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
 import java.util.List;
 import com.app.commondataservice.entity.Products;
 import com.app.commondataservice.exception.DataNotFoundException;
-import java.io.IOException;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -24,7 +22,9 @@ public interface ProductService {
     public Products findProductByProductId(Long productId)
             throws DataNotFoundException;
 
-    public List<ProductDTO> getListProduct(String keyword);
+    public ListProductDTO getListProduct(
+            String keyword, List<Long> categoryIds,
+            Integer page, Integer pageSize, List<String> orderBy, String orderDirection);
 
     public ProductDetailDTO getProductDetail(Long productId)
             throws DataNotFoundException;
@@ -36,7 +36,4 @@ public interface ProductService {
 
     public void deleteProduct(Long productId, AuthUserDTO authUserDTO, Long refUserId)
             throws DataNotFoundException;
-
-    public void createProductImages(List<MultipartFile> files)
-            throws IOException;
 }

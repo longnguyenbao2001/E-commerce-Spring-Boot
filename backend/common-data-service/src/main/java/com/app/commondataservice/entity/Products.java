@@ -9,11 +9,11 @@ import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -42,15 +42,14 @@ public class Products implements Serializable {
     @Basic(optional = false)
     @Column(name = "description")
     private String description;
-    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "productsList")
+    private List<Categories> categoriesList;
+    @OneToMany(mappedBy = "products")
     private List<ProductImages> productImagesList;
-    @OneToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "products")
     private List<Variants> variantsList;
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Categories categories;
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Users users;
 
     public Products() {
@@ -90,6 +89,14 @@ public class Products implements Serializable {
         this.description = description;
     }
 
+    public List<Categories> getCategoriesList() {
+        return categoriesList;
+    }
+
+    public void setCategoriesList(List<Categories> categoriesList) {
+        this.categoriesList = categoriesList;
+    }
+
     public List<ProductImages> getProductImagesList() {
         return productImagesList;
     }
@@ -104,14 +111,6 @@ public class Products implements Serializable {
 
     public void setVariantsList(List<Variants> variantsList) {
         this.variantsList = variantsList;
-    }
-
-    public Categories getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Categories categories) {
-        this.categories = categories;
     }
 
     public Users getUsers() {

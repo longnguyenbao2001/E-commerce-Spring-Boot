@@ -7,7 +7,7 @@ package com.app.commondataservice.controller;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.CreateProductRequestDTO;
 import com.app.commondataservice.dto.CreateVariantRequestDTO;
-import com.app.commondataservice.dto.ProductDTO;
+import com.app.commondataservice.dto.ListProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
 import com.app.commondataservice.dto.PutVariantRequestDTO;
@@ -16,8 +16,10 @@ import com.app.commondataservice.service.ProductService;
 import com.app.commondataservice.exception.DataNotFoundException;
 import com.app.commondataservice.handler.HttpErrorResponseHandler;
 import com.app.commondataservice.handler.HttpResponseHandler;
+import com.app.commondataservice.service.ProductImageService;
 import com.app.commondataservice.service.VariantService;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -50,6 +52,9 @@ public class ProductController {
     private VariantService variantService;
 
     @Autowired
+    private ProductImageService productImageService;
+
+    @Autowired
     private HttpErrorResponseHandler httpErrorResponseHandler;
 
     @Autowired
@@ -60,9 +65,31 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<?> getListProduct(@RequestParam(
-            required = false, defaultValue = "") String keyword) {
+            required = false, defaultValue = "") String keyword,
+            @RequestParam(required = false) List<Long> categoryIds,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) List<String> orderBy,
+            @RequestParam(required = false) String orderDirection) {
         try {
-            List<ProductDTO> res = productService.getListProduct(keyword);
+            if (page == null) {
+                page = Integer.valueOf(env.getProperty("pagination.page"));
+            }
+
+            if (pageSize == null) {
+                pageSize = Integer.valueOf(env.getProperty("pagination.size"));
+            }
+
+            if (orderDirection == null) {
+                orderDirection = env.getProperty("pagination.sort.direction.asc");
+            }
+
+            if (orderBy == null) {
+                orderBy = new ArrayList<>();
+                orderBy.add(env.getProperty("pagination.sort.byId"));
+            }
+
+            ListProductDTO res = productService.getListProduct(keyword, categoryIds, page, pageSize, orderBy, orderDirection);
 
             return httpResponseHandler.handleAcceptedRequest(res);
         } catch (Exception e) {
@@ -71,7 +98,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getListProduct(@PathVariable Long productId) {
+    public ResponseEntity<?> getProductDetail(@PathVariable Long productId) {
         try {
             ProductDetailDTO res = productService.getProductDetail(productId);
 
@@ -196,12 +223,12 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/images")
+    @PostMapping("/{productId}/images")
     public ResponseEntity<?> createProductImages(@AuthenticationPrincipal AuthUserDTO authUserDTO,
-            @RequestParam(name = "files", required = false) List<MultipartFile> files) {
+            @RequestParam(name = "files", required = false) List<MultipartFile> files,
+            @PathVariable Long productId) {
         try {
-//            System.out.println(authUserDTO.getId());
-            productService.createProductImages(files);
+            productImageService.createProductImages(productId, files);
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
         } catch (Exception e) {

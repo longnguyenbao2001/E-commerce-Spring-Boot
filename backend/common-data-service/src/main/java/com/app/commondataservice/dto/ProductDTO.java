@@ -4,6 +4,8 @@
  */
 package com.app.commondataservice.dto;
 
+import java.math.BigDecimal;
+
 /**
  *
  * @author user
@@ -12,6 +14,8 @@ public class ProductDTO {
 
     private Long id;
     private String name;
+    private String imageUrl;
+    private BigDecimal unitPrice;
 
     public Long getId() {
         return id;
@@ -29,4 +33,19 @@ public class ProductDTO {
         this.name = name;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 }

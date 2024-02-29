@@ -9,7 +9,6 @@ import java.util.List;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +36,7 @@ public class VariantLabels implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "variantLabels", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "variantLabels")
     private List<VariantValues> variantValuesList;
 
     public VariantLabels() {
