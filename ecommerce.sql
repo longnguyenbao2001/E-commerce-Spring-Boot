@@ -185,24 +185,26 @@ VALUES
 
 INSERT INTO variants (unit_price, quantity, product_id)
 VALUES 
-(300000, 10, 1), --create combined variant price and quantity for blue, 2gb, small  variant
-(320000, 10, 1), --create combined variant price and quantity for black, 3gb, medium  variant
-(280000, 10, 1), --create combined variant price and quantity for yellow, 6gb, large  variant
-(140000, 10, 2),
-(140000, 10, 3),
-(140000, 10, 4),
-(140000, 10, 5),
-(140000, 10, 6),
-(140000, 10, 7),
-(140000, 10, 8),
-(140000, 10, 9),
-(140000, 10, 10);
+(1500000, 10, 1), --create combined variant price and quantity for blue, 2gb, small  variant
+(1700000, 10, 1), --create combined variant price and quantity for black, 3gb, medium  variant
+(3100000, 10, 1), --create combined variant price and quantity for yellow, 6gb, large  variant
+(3200000, 10, 1), --create combined variant price and quantity for black, 6gb, large  variant
+(1400000, 10, 2),
+(1400000, 10, 3),
+(1400000, 10, 4),
+(1400000, 10, 5),
+(1400000, 10, 6),
+(1400000, 10, 7),
+(1400000, 10, 8),
+(1400000, 10, 9),
+(1400000, 10, 10);
 
 INSERT INTO variants_variant_values (variant_id, variant_value_id)
 VALUES 
 (1, 1), (1, 4), (1, 7), --create variant blue, 2gb, small  variant
 (2, 2), (2, 5), (2, 8), --create variant black, 3gb, medium  variant
-(3, 3), (3, 6), (3, 9); --create variant yellow, 6gb, large  variant
+(3, 3), (3, 6), (3, 9), --create variant yellow, 6gb, large  variant
+(4, 2), (4, 6), (4, 9); --create variant black, 6gb, large  variant
 
 INSERT INTO orders (customer_id)
 VALUES (1);

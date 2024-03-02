@@ -26,7 +26,7 @@ export default {
             rowSize: 4,
             currPage: 1,
             pageCount: 0,
-            pageSize: 1,
+            pageSize: 5,
             products: [],
         }
     },

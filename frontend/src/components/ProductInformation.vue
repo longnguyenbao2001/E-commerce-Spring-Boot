@@ -2,11 +2,19 @@
     <h1 class="text-left">PRODUCT INFORMATION</h1>
 
     <div class="row mb-4">
-        <div class="col">
+        <div class="col-6">
             <ProductImages />
         </div>
-        <div class="col">
+        <div class="col-4">
             <h3 class="text-left">{{ productDetail.name }}</h3>
+
+            <ProductVariantList />
+
+            <button type="button" class="btn btn-primary" @click="addToCart" :disabled="!isValidVariant">
+                Add to cart
+            </button>
+
+            <p v-show="!isValidVariant">Please choose a valid variant</p>
         </div>
     </div>
 
@@ -17,12 +25,14 @@
 
 <script>
 import ProductImages from './ProductImages.vue'
+import ProductVariantList from './ProductVariantList.vue'
 import { endpoints, productApi } from '../config/Api.js'
 
 export default {
     name: 'ProductInformation',
     components: {
-        ProductImages
+        ProductImages,
+        ProductVariantList
     },
     data() {
         return {
@@ -42,6 +52,26 @@ export default {
 
             }
         },
-    }
+        async addToCart() {
+            const data = {
+                'productId': this.productDetail.id,
+                'productName': this.productDetail.name,
+                'variantData': this.$store.state.currentVariant,
+                'quantity': this.$store.state.currentQuantity
+            }
+
+            await this.$store.dispatch('addToCart', data)
+
+            this.$nextTick(() => {
+                // Access the updated state after the next tick
+                console.log(this.$store.state.isValidVariant);
+            });
+        }
+    },
+    computed: {
+        isValidVariant() {
+            return this.$store.state.isValidVariant
+        }
+    },
 }
 </script>

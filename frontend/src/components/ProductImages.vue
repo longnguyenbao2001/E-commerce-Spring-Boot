@@ -68,11 +68,12 @@
             <button type="button" data-bs-target="#carouselDemo" data-bs-slide-to="3">
                 <img src="https://picsum.photos/id/4/5000/3333" />
             </button>
+
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .carousel-indicators img {
     width: 70px;
     display: block;

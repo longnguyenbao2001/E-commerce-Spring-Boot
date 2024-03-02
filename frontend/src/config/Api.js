@@ -5,6 +5,7 @@ const endpoints = {
     'signup': '/auth/signup',
     'listproduct': '/products',
     'productDetail': (productId) => `/products/${productId}`,
+    'productVariants': (productId) => `/products/${productId}/variants`,
 }
 
 const userApi = axios.create({

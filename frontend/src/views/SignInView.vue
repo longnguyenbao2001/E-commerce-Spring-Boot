@@ -1,4 +1,3 @@
-<!-- Sign In component (SignIn.vue) -->
 <template>
     <h1 class="text-center">SIGN IN</h1>
 
@@ -39,14 +38,14 @@ export default {
 
             await userApi.post(endpoints['signin'], this.formData)
                 .then(res => {
-                    localStorage.setItem('accessToken', res.data.jwtAccessToken);
-                    localStorage.setItem('userData', JSON.stringify(res.data.userData));
+                    localStorage.setItem('accessToken', res.data.jwtAccessToken)
+                    localStorage.setItem('userData', JSON.stringify(res.data.userData))
 
-                    this.$store.dispatch('updateAuthenticationStatus', true);
+                    this.$store.dispatch('updateAuthenticationStatus', true)
 
-                    console.log(JSON.parse(localStorage.userData));
+                    // console.log(JSON.parse(localStorage.userData));
 
-                    this.$router.push({ name: 'home' });
+                    this.$router.push({ name: 'home' })
                 })
                 .catch(err => {
                     this.err = true;
@@ -56,4 +55,3 @@ export default {
     }
 }
 </script>
-  
