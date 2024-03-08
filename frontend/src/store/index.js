@@ -7,7 +7,7 @@ const store = createStore({
             isValidVariant: false,
             currentVariant: null,
             currentQuantity: 1,
-            isValidQuantity: false,
+            // isValidQuantity: false,
             cart: localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [],
         }
     },
@@ -49,8 +49,19 @@ const store = createStore({
         SET_CURRENTQUANTITY_VALUE(state, value) {
             state.currentQuantity = value
         },
-        SET_VALIDQUANTITY_STATUS(state, status) {
-            state.isValidQuantity = status
+        // SET_VALIDQUANTITY_STATUS(state, status) {
+        //     state.isValidQuantity = status
+        // },
+        SET_CARTITEM_QUANTITY(state, data) {
+            for (const item of state.cart) {
+                if (item.productId == data.productId) {
+                    if (item.variantData.id === data.variantId) {
+                        item.quantity = data.quantity
+                        localStorage.setItem('cart', JSON.stringify(state.cart))
+                        return
+                    }
+                }
+            }
         },
     },
     actions: {
@@ -72,8 +83,11 @@ const store = createStore({
         updateCurrentQuantity({ commit }, value) {
             commit('SET_CURRENTQUANTITY_VALUE', value)
         },
-        updateValidQuantityStatus({ commit }, status) {
-            commit('SET_VALIDQUANTITY_STATUS', status)
+        // updateValidQuantityStatus({ commit }, status) {
+        //     commit('SET_VALIDQUANTITY_STATUS', status)
+        // },
+        updateCartItemQuantity({ commit }, data) {
+            commit('SET_CARTITEM_QUANTITY', data)
         },
     },
 });

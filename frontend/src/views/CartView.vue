@@ -22,7 +22,9 @@
                     </router-link>
                 </td>
                 <td>{{ variantsData[i - 1] }}</td>
-                <td>{{ cartData[i - 1].quantity }}</td>
+                <td>
+                    <QuantityButtons :productData="cartData[i - 1]" />
+                </td>
                 <td>{{ cartData[i - 1].variantData.unitPrice }}</td>
                 <td>{{ cartData[i - 1].quantity * cartData[i - 1].variantData.unitPrice }}</td>
                 <td>
@@ -34,15 +36,49 @@
             </tr>
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-end">
+        <div class="card w-25 p-3">
+            <div class="card-header bg-transparent">
+                <h4>Cart Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="font-weight-medium">Subtotal</h6>
+                    <h6 class="font-weight-medium">{{ totalCost }}</h6>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <h6 class="font-weight-medium">Shipping</h6>
+                    <h6 class="font-weight-medium">Free</h6>
+                </div>
+            </div>
+            <div class="card-footer border-secondary bg-transparent">
+                <div class="d-flex justify-content-between">
+                    <h5 class="font-weight-bold">Total</h5>
+                    <h5 class="font-weight-bold">{{ totalCost }}</h5>
+                </div>
+                <button v-if="isAuthenticated" class="btn btn-primary input-group">Proceed to checkout</button>
+                <router-link v-else :to="{ path: '/signin' }" class="nav-link text-end fst-italic">
+                    Sign in to checkout
+                </router-link>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+import QuantityButtons from '../components/QuantityButtons.vue'
+
 export default {
     name: 'CartView',
+    components: {
+        QuantityButtons
+    },
     data() {
         return {
             cartData: [],
             variantsData: [],
+            totalCost: 0,
         }
     },
     mounted() {
@@ -51,6 +87,7 @@ export default {
     methods: {
         getCartData() {
             this.cartData = this.$store.state.cart
+            this.totalCost = 0
             let label = '', name = ''
             let variantDetail = ''
 
@@ -62,6 +99,8 @@ export default {
 
                     variantDetail += `${label}: ${name}, `
                 }
+
+                this.totalCost += item.quantity * item.variantData.unitPrice
 
                 if (item.variantData.listVariantValues.length > 0) {
                     this.variantsData.push(variantDetail.slice(0, -2))
@@ -85,6 +124,11 @@ export default {
         cartData: {
             handler: 'getCartData',
             immediate: false
+        }
+    },
+    computed: {
+        isAuthenticated() {
+            return this.$store.state.isAuthenticated
         }
     },
 }

@@ -47,7 +47,7 @@ export default {
                         page: this.currPage,
                         pageSize: this.pageSize
                     }
-                });
+                })
 
                 this.products = res.data.listProducts
                 this.pageCount = Math.ceil(res.data.totalCount / this.pageSize)
