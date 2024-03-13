@@ -9,6 +9,7 @@ import com.app.commondataservice.dto.CreateProductRequestDTO;
 import com.app.commondataservice.dto.CreateVariantRequestDTO;
 import com.app.commondataservice.dto.ListProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
+import com.app.commondataservice.dto.ProductImageDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
 import com.app.commondataservice.dto.PutVariantRequestDTO;
 import com.app.commondataservice.dto.VariantDTO;
@@ -231,6 +232,17 @@ public class ProductController {
             productImageService.createProductImages(productId, files);
 
             return httpResponseHandler.handleAcceptedRequest(env.getProperty("mes.success"));
+        } catch (Exception e) {
+            return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{productId}/get-images")
+    public ResponseEntity<?> getProductImages(@PathVariable Long productId) {
+        try {
+            List<ProductImageDTO> res = productImageService.findProductImagesByProductId(productId);
+
+            return httpResponseHandler.handleAcceptedRequest(res);
         } catch (Exception e) {
             return httpErrorResponseHandler.handleInternalServerError(e.getMessage());
         }

@@ -4,6 +4,8 @@
  */
 package com.app.commondataservice.service;
 
+import com.app.commondataservice.dto.ProductImageDTO;
+import com.app.commondataservice.exception.DataNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,4 +18,7 @@ public interface ProductImageService {
 
     public void createProductImages(Long productId, List<MultipartFile> files)
             throws IOException;
+
+    public List<ProductImageDTO> findProductImagesByProductId(Long productId)
+            throws DataNotFoundException;
 }

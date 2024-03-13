@@ -48,6 +48,7 @@ export default {
                 const res = await productApi.get(endpoints['productDetail'](this.$route.params.productId));
 
                 this.productDetail = res.data
+                console.log(this.productDetail)
             } catch (error) {
 
             }
@@ -62,10 +63,10 @@ export default {
 
             await this.$store.dispatch('addToCart', data)
 
-            this.$nextTick(() => {
-                // Access the updated state after the next tick
-                console.log(this.$store.state.isValidVariant);
-            });
+            // this.$nextTick(() => {
+            //     // Access the updated state after the next tick
+            //     console.log(this.$store.state.isValidVariant);
+            // });
         }
     },
     computed: {

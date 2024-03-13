@@ -23,7 +23,7 @@
                 </td>
                 <td>{{ variantsData[i - 1] }}</td>
                 <td>
-                    <QuantityButtons :productData="cartData[i - 1]" />
+                    <QuantityButtons :productData="cartData[i - 1]" @quantityUpdated="updateTotalCost" />
                 </td>
                 <td>{{ cartData[i - 1].variantData.unitPrice }}</td>
                 <td>{{ cartData[i - 1].quantity * cartData[i - 1].variantData.unitPrice }}</td>
@@ -118,14 +118,20 @@ export default {
             this.$store.dispatch('removeFromCart', data)
 
             this.getCartData()
+        },
+        updateTotalCost() {
+            this.totalCost = 0;
+            for (const item of this.cartData) {
+                this.totalCost += item.quantity * item.variantData.unitPrice
+            }
         }
     },
-    watch: {
-        cartData: {
-            handler: 'getCartData',
-            immediate: false
-        }
-    },
+    // watch: {
+    //     cartData: {
+    //         handler: 'getCartData',
+    //         immediate: false
+    //     }
+    // },
     computed: {
         isAuthenticated() {
             return this.$store.state.isAuthenticated

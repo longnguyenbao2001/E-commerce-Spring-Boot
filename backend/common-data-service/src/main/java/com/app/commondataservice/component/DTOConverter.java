@@ -7,9 +7,11 @@ package com.app.commondataservice.component;
 import com.app.commondataservice.dto.GetVariantsQuantityResponseDTO;
 import com.app.commondataservice.dto.ProductDTO;
 import com.app.commondataservice.dto.ProductDetailDTO;
+import com.app.commondataservice.dto.ProductImageDTO;
 import com.app.commondataservice.dto.VariantValueDTO;
 import com.app.commondataservice.dto.VariantDTO;
 import com.app.commondataservice.dto.UserDTO;
+import com.app.commondataservice.entity.ProductImages;
 import com.app.commondataservice.entity.VariantValues;
 import com.app.commondataservice.entity.Variants;
 import com.app.commondataservice.entity.Products;
@@ -71,5 +73,11 @@ public class DTOConverter {
         GetVariantsQuantityResponseDTO variantDTO = modelMapper.map(variant, GetVariantsQuantityResponseDTO.class);
 
         return variantDTO;
+    }
+
+    public ProductImageDTO convertProductImageToDTO(ProductImages productImages) {
+        ProductImageDTO productImageDTO = modelMapper.map(productImages, ProductImageDTO.class);
+
+        return productImageDTO;
     }
 }

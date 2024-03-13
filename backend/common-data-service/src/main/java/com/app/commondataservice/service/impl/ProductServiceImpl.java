@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.app.commondataservice.dto.AuthUserDTO;
 import com.app.commondataservice.dto.ListProductDTO;
 import com.app.commondataservice.dto.PutProductRequestDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +80,7 @@ public class ProductServiceImpl implements ProductService {
         List<Products> listProducts;
         if (categoryIds != null) {
             res.setTotalCount(productRepository.countByNameContainingAndCategoriesList_IdIn(keyword, categoryIds));
+//            listProducts = productRepository.findDistinctByNameContainingAndCategoriesList_IdInOrCategoriesList_Categories_IdIn(keyword, categoryIds, categoryIds, pageable);
             listProducts = productRepository.findByNameContainingAndCategoriesList_IdIn(keyword, categoryIds, pageable);
         } else {
             res.setTotalCount(productRepository.countByNameContaining(keyword));

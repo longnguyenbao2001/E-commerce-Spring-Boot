@@ -1,14 +1,14 @@
 <template>
     <div class="input-group me-2" style="width: 100px;">
         <div class="input-group-btn">
-            <button class="btn btn-sm btn-primary btn-minus" @click="decreaseQuantity()">
+            <button class="btn btn-sm btn-primary btn-minus" @click="updateQuantity(-1)">
                 <i class="fa fa-minus"></i>
             </button>
         </div>
         <input type="number" class="form-control form-control-sm bg-light text-center" disabled
             :value="currentQuantity" />
         <div class="input-group-btn">
-            <button class="btn btn-sm btn-primary btn-plus" @click="increaseQuantity()">
+            <button class="btn btn-sm btn-primary btn-plus" @click="updateQuantity(1)">
                 <i class="fa fa-plus"></i>
             </button>
         </div>
@@ -33,17 +33,22 @@ export default {
         }
     },
     methods: {
-        decreaseQuantity() {
-            if (this.currentQuantity > 1) {
-                const data = {
-                    'productId': this.productData.productId,
-                    'variantId': this.productData.variantData.id,
-                    'quantity': --this.currentQuantity
-                }
+        updateQuantity(delta) {
+            const newQuantity = this.currentQuantity + delta
+            if (newQuantity >= 1 && newQuantity <= this.productData.variantData.quantity) {
+                this.currentQuantity = newQuantity
 
                 const routeName = this.$route.name
                 if (routeName == 'myCart') {
+                    const data = {
+                        'productId': this.productData.productId,
+                        'variantId': this.productData.variantData.id,
+                        'quantity': this.currentQuantity
+                    }
+
                     this.$store.dispatch('updateCartItemQuantity', data)
+
+                    this.$emit('quantityUpdated', true)
                 }
 
                 else if (routeName == 'productDetail') {
@@ -51,24 +56,26 @@ export default {
                 }
             }
         },
-        increaseQuantity() {
-            if (this.currentQuantity < this.productData.variantData.quantity) {
-                const data = {
-                    'productId': this.productData.productId,
-                    'variantId': this.productData.variantData.id,
-                    'quantity': ++this.currentQuantity
-                }
+        // increaseQuantity() {
+        //     if (this.currentQuantity < this.productData.variantData.quantity) {
+        //         this.currentQuantity += 1
 
-                const routeName = this.$route.name
-                if (routeName == 'myCart') {
-                    this.$store.dispatch('updateCartItemQuantity', data)
-                }
+        //         const routeName = this.$route.name
+        //         if (routeName == 'myCart') {
+        //             const data = {
+        //                 'productId': this.productData.productId,
+        //                 'variantId': this.productData.variantData.id,
+        //                 'quantity': this.currentQuantity
+        //             }
 
-                else if (routeName == 'productDetail') {
-                    this.$store.dispatch('updateCurrentQuantity', this.currentQuantity)
-                }
-            }
-        },
+        //             this.$store.dispatch('updateCartItemQuantity', data)
+        //         }
+
+        //         else if (routeName == 'productDetail') {
+        //             this.$store.dispatch('updateCurrentQuantity', this.currentQuantity)
+        //         }
+        //     }
+        // },
     }
 }
 </script>
